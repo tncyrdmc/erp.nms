@@ -220,12 +220,11 @@ class modelo_dashboard extends CI_Model
   	$ultimos_auspiciados=array();
   	foreach ($afiliados as $afiliado)
   	{
-  		$afiliados_imagen="/template/img/empresario.jpg";
+  		$afiliados_imagen="/template/img/avatars/male.png";
   		foreach ($image as $img) {
   			if($img->id_user==$afiliado->id){
-  				$cadena=explode(".", $img->img);
-  				if($cadena[0]=="user")
-  				{
+  				$url=getcwd().$img->url;
+  				if(file_exists($url)){
   					$afiliados_imagen=$img->url;
   				}
   			}

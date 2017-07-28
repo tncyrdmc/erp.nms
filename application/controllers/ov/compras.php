@@ -124,6 +124,9 @@ function index()
 		$grupos = $this->model_mercancia->CategoriasMercancia();
 		$redes = $this->model_tipo_red->RedesUsuario($id);
 		
+		$style=$this->general->get_style(1);
+		$this->template->set("style",$style);
+
 		$this->template->set("usuario",$usuario);
 		$this->template->set("grupos",$grupos);
 		
@@ -3032,14 +3035,17 @@ function index()
 		else if($id_tipo_mercancia==5)
 			$detalles=$this->modelo_compras->detalles_membresia($id_mercancia);
 		
-		
+		$img_item = $imagenes[0]->url;
+			
+			if(!file_exists(getcwd().$img_item))
+				$img_item = "/template/img/favicon/favicon.png";
 		
 		echo '<div class="product">
           <a data-placement="left" data-original-title="Add to Wishlist" data-toggle="tooltip" class="add-fav tooltipHere">
           <i class="glyphicon glyphicon-heart"></i>
           </a>
             <div class="image"> <a href="product-details.html">
-				<img class="img-responsive" alt="img" src="'.$imagenes[0]->url.'" style="width: 15rem ! important; height: 10rem ! important;">
+				<img class="img-responsive" alt="img" src="'.$img_item.'" style="width: 15rem ! important; height: 10rem ! important;">
 				</a>
             </div>
             <div class="description">
@@ -3072,8 +3078,8 @@ function index()
 			$max=($limites[0]->max_venta>$limites[0]->existencia) ? $limites[0]->existencia :$limites[0]->max_venta;
 			echo "	<div class='row'>
 						<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-							<p class='font-md'><strong>Cantidad</strong></p><br>
-							<input type='number' id='cantidad' name='cantidad' min='".$min."' max='".$max."' value='".$min."' onkeydown='return false'><br><br>
+							<p class='font-md'><strong>Unidades</strong></p><br>
+							<input type='number' id='cantidad' name='cantidad' min='".$min."' max='".$max."' value='".$min."' ><br><br>
 						</div>
 					</div>";
 		}
@@ -3108,7 +3114,7 @@ function index()
 			$detalles=$this->modelo_compras->detalles_membresia($id_mercancia);
 	
 		
-		if(!$data['qty'])
+		if(!isset($data['qty']))
 			$cantidad=1;
 		else 
 			$cantidad=$data['qty'];
@@ -3691,29 +3697,39 @@ function index()
 		for($i=0;$i<sizeof($mercancia);$i++)
 		{
 			$id_tipo_mercancia = isset($mercancia[$i]->id_tipo_mercancia) ? $mercancia[$i]->id_tipo_mercancia : 0;
-			$inventario = '';
 			$boton = 'compra_prev('.$mercancia[$i]->id.','.$tipoMercancia.',0)' ;
 			$btn = 'success';
 			$rows = ($mercancia[$i]->descripcion!='') ? 9.8 : 1;
+			$inventario =  '';
 			
 			if($id_tipo_mercancia == 1){
-				$existencia = intval($mercancia[$i]->existencia);				
+				$existencia = intval($mercancia[$i]->existencia);			
+				$minimo = intval($mercancia[$i]->inventario);
+				$agotado = (($existencia-$minimo)>0) ? false : true;
 				$color = ($existencia < $mercancia[$i]->max_venta) ? 'orange' : 'green';
-				$inventario = ($existencia>0)  ? 'Existencias: <b style="color: '.$color.'">'.$existencia.'</b>' : '<b style="color: red">Producto Agotado</b>';
-				($existencia>0) ? '' : $boton = 'javascript:void(0)' ;
-				($existencia>0) ? '' : $btn = 'default' ;	
-			}					
+				$inventario = 'Existencias: <b style="color: '.$color.'">'.$existencia.'</b>' ;
+				if($agotado){ 
+						$inventario = '<b style="color: red">Producto Agotado</b>';
+						$boton = 'javascript:void(0)' ;
+						$btn = 'default' ;	
+				}
+			}				
 			
 			$puntos_comisionables = ($mercancia[$i]->puntos_comisionables!='0') 
 				? '<span style="font-size: 1.5rem;">(Puntos  '.$mercancia[$i]->puntos_comisionables.')</span>' : '';
 				
+			$img_item = $mercancia[$i]->img;
+			
+			if(!file_exists(getcwd().$img_item))
+				$img_item = "/template/img/favicon/favicon.png";
+
 		$imprimir ='	<div class="item col-lg-3 col-md-3 col-sm-3 col-xs-3">
 					<div class="producto">
 					<a class="" data-toggle="tooltip" data-original-title="Add to Wishlist"  data-placement="left">
 						<i class=""></i>
 					</a>
 					<div class="image"> <a onclick="detalles('.$mercancia[$i]->id.','.$tipoMercancia.')">
-							<img src="'.$mercancia[$i]->img.'" alt="img" class="img-responsive"></a>
+							<img src="'.$img_item.'" alt="img" class="img-responsive"></a>
 					<div class="promotion">   </div>
 					</div>
 					<div class="description" style="overflow-y: scroll;height: 10em">
@@ -3757,8 +3773,14 @@ function index()
 			foreach ($this->cart->contents() as $items)
 			{
 				$total=$items['qty']*$items['price'];
+
+				$img_item = $compras['compras'][$cantidad]['imagen'];
+				
+				if(!file_exists(getcwd().$img_item))
+					$img_item = "/template/img/favicon/favicon.png";
+
 				echo '<tr class="miniCartProduct">
-									<td style="width:20%" class="miniCartProductThumb"><div> <a href=""> <img src="'.$compras['compras'][$cantidad]['imagen'].'" alt="img"> </a> </div></td>
+									<td style="width:20%" class="miniCartProductThumb"><div> <a href=""> <img src="'.$img_item.'" alt="img"> </a> </div></td>
 									<td style="width:40%"><div class="miniCartDescription">
 				                        <h4> <a href=""> '.$compras['compras'][$cantidad]['nombre'].'</a> </h4>
 				                        <span> '.$items['price'].' </span>
@@ -4622,7 +4644,8 @@ function index()
 				
 			$id_afiliado_padre=$afiliado_padre[0]->debajo_de;
 				
-			$valor_comision=(($valor_comision_por_nivel[$i]->valor*$costoVenta)/100);
+			$valorComision = isset($valor_comision_por_nivel[$i]) ? $valor_comision_por_nivel[$i]->valor : 0;
+			$valor_comision=(($valorComision*$costoVenta)/100);
 				
 			$this->modelo_compras->set_comision_afiliado($id_venta,$id_red_mercancia,$id_afiliado_padre,$valor_comision);
 				

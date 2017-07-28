@@ -55,7 +55,7 @@ class billetera2 extends CI_Controller
 		$this->template->set_layout('website/main');
 		$this->template->set_partial('header', 'website/ov/header');
 		$this->template->set_partial('footer', 'website/ov/footer');
-		$this->template->build('website/ov/billetera/dashboard');
+		#$this->template->build('website/ov/billetera/dashboard');
 		$this->template->build('website/ov/billetera/index');
 	}
 	
@@ -83,7 +83,7 @@ class billetera2 extends CI_Controller
 		$this->template->set_layout('website/main');
 		$this->template->set_partial('header', 'website/ov/header');
 		$this->template->set_partial('footer', 'website/ov/footer');
-		$this->template->build('website/ov/billetera/dashboard');
+		#$this->template->build('website/ov/billetera/dashboard');
 		$this->template->build('website/ov/billetera/index_estado');
 	}
 	
@@ -126,7 +126,7 @@ class billetera2 extends CI_Controller
 		$this->template->set_layout('website/main');
 		$this->template->set_partial('header', 'website/ov/header');
 		$this->template->set_partial('footer', 'website/ov/footer');
-		$this->template->build('website/ov/billetera/dashboard');
+		#$this->template->build('website/ov/billetera/dashboard');
 		$this->template->build('website/ov/billetera/historial_cuenta');
 	}
 	
@@ -167,7 +167,7 @@ class billetera2 extends CI_Controller
 		$this->template->set_layout('website/main');
 		$this->template->set_partial('header', 'website/ov/header');
 		$this->template->set_partial('footer', 'website/ov/footer');
-		$this->template->build('website/ov/billetera/dashboard');
+		#$this->template->build('website/ov/billetera/dashboard');
 		$this->template->build('website/ov/billetera/historial');
 	}
 
@@ -436,7 +436,7 @@ class billetera2 extends CI_Controller
 		$this->template->set_layout('website/main');
 		$this->template->set_partial('header', 'website/ov/header');
 		$this->template->set_partial('footer', 'website/ov/footer');
-		$this->template->build('website/ov/billetera/dashboard');
+		#$this->template->build('website/ov/billetera/dashboard');
 		$this->template->build('website/ov/billetera/estado');
 	}
 	

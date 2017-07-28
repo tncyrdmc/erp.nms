@@ -353,11 +353,12 @@ class configuracion extends CI_Controller
 		$this->template->set_partial('footer', 'website/bo/footer');
 		$this->template->build('website/bo/empresa/banner');
 	}
+	
 	function crear_banner(){
 		$error="";
 		$id = $this->tank_auth->get_user_id();
 		$ruta="/media/Empresa/";
-		$error=$error+$img;
+		
 		//definimos la ruta para subir la imagen
 		$config['upload_path'] 		= getcwd().$ruta;
 		$config['allowed_types'] 	= 'gif|jpg|png|jpeg|png';
@@ -371,9 +372,9 @@ class configuracion extends CI_Controller
 		if (!$this->upload->do_upload('img'))
 		{
 			$this->model_admin->banner_modificacion();
-			//$error = "El tipo de archivo que esta cargando no esta permitido como imagen para el banner.";
-			//$this->session->set_flashdata('error', $error);
-			//redirect('/bo/configuracion/banner');
+			$error = "El tipo de archivo que esta cargando no esta permitido como imagen para el banner.";
+			$this->session->set_flashdata('error', $error);
+			redirect('/bo/configuracion/banner');
 		}
 		else
 		{

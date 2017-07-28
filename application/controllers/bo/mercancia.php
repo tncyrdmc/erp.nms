@@ -135,7 +135,7 @@ class mercancia extends CI_Controller
 		$this->template->set_theme('desktop');
 		$this->template->set_layout('website/main');
 		if($type==8||$type==9){
-			$data = array("user" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
+			$data2 = array("user2" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
 			$header = $type==8 ? 'CEDI' : 'Almacen';
 			$this->template->set_partial('header', 'website/'.$header.'/header2',$data);
 		}else{

@@ -35,7 +35,7 @@ class altas extends CI_Controller
 		$this->template->set("type",$usuario[0]->id_tipo_usuario);
 		
 		$this->template->set("style",$style);
-		$data = array("user" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
+		$data = array("user2" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
 
 		$this->template->set_theme('desktop');
         $this->template->set_layout('website/main');

@@ -718,15 +718,24 @@ class model_mercancia extends CI_Model {
 	}
 	
 	function getProductoBy($id,$red) {
-		$query = "SELECT m.id id_mercancia, p.* , m.*
-											FROM mercancia m , producto p ,items i
-											WHERE p.id = m.sku 
-												and m.id = i.id
-												and i.red = '".$red."'
-												and (i.id = '".$id."' 
-												or lower(p.codigo_barras) like '".strtolower($id)."%'  
-												or lower(p.nombre) like '".strtolower($id)."%' 
-												or lower(m.sku_2) like '".strtolower($id)."%')";
+		$strID = strtolower($id);
+		
+		$query = "SELECT
+					    m.id id_mercancia, p.*, m.*
+					FROM
+					    mercancia m,
+					    producto p,
+					    items i
+					WHERE
+					    p.id = m.sku AND m.id = i.id
+					        AND i.red = '".$red."'
+					        AND i.id_tipo_mercancia = 1
+					        AND (i.id = '".$id."'
+					        OR LOWER(p.codigo_barras) LIKE '".$strID."%'
+							OR LOWER(p.concepto) LIKE '".$strID."%'
+					        OR LOWER(p.nombre) LIKE '".$strID."%'
+					        OR LOWER(m.sku_2) LIKE '".$strID."%')";
+		
 		$q = $this->db->query ($query);
 		return $q->result ();
 	}

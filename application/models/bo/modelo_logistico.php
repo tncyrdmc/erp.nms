@@ -312,7 +312,15 @@ class modelo_logistico extends CI_Model
 	}
 
 	private function getTodoInventariobyMercancia($mercancia,$id) {
-		$inventario_q=$this->db->query("Select * from inventario where id_mercancia=".$mercancia." and id_almacen=".$id);
+	    $inventario_q=$this->db->query("SELECT
+                                                i.*
+                                            FROM
+                                                inventario i,
+                                                mercancia m
+                                            WHERE
+                                                i.id_mercancia = m.sku
+                                                AND m.id = $mercancia
+                                                AND id_almacen = ".$id);
 		$inventario_res=$inventario_q->result();
 		return $inventario_res;
 	}
@@ -1128,7 +1136,18 @@ pt.id = cve.id_tarifa and co.Code = pm.id_pais and pm.estado = es.id and pm.muni
 	}
 	function get_existencias($id)
 	{	
-		$q=$this->db->query('SELECT * from inventario where id_mercancia = '.$id.' and estatus = "ACT"');
+		$query = "SELECT 
+					    i.*
+					FROM
+					    inventario i,
+					    mercancia m
+					WHERE
+					    i.id_mercancia = m.sku  
+					    AND m.id = ".$id."
+					    AND i.estatus = 'ACT'";
+
+		$q=$this->db->query($query);
+		
 		$res=$q->result();
 		$existencias = array();
 		foreach ($res as $inventario){

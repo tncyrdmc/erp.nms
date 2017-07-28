@@ -17,10 +17,32 @@ class Auth extends CI_Controller
 		$this->load->model('cemail');
 		$this->load->model('bo/model_admin');
 		
+		$this->setWeb ();  
+	}
+	
+	private function setWeb() {
+		
+		set_error_handler(
+				create_function(
+						'$severity, $message, $file, $line',
+						'throw new ErrorException($message, $severity, $severity, $file, $line);'
+				)
+		);
+		
 		$q=$this->model_admin->get_empresa_multinivel();
-		error_reporting(0);
-		$this->web = (file_get_contents($q[0]->web)) ? $q[0]->web : 'auth/login/';
-		#echo $this->web;
+		$web = $q[0]->web;
+		
+		try {
+			$s = file_get_contents($web);
+			#log_message('ERROR',strlen($s));
+			$this->web = $web;
+		}
+		catch (Exception $e) {
+			$this->web = 'auth/login/';
+			#log_message('ERROR','page not found : '.$web);
+		}
+		
+		restore_error_handler();
 	}
 
 	function index()

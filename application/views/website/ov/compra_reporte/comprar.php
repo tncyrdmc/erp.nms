@@ -147,11 +147,22 @@
 															if($compras[$contador]['costos'][0]->iva!='MAS'){
 																$precioUnidad-=$costoImpuesto;
 															}
+
+															$img_item = $compras[$contador]['imagen'];
+															
+															if(!file_exists(getcwd().$img_item))
+																$img_item = "/template/img/favicon/favicon.png";
+															
+															$descripcion_item = $compras[$contador]['descripcion'];
+															
+															if(strlen($descripcion_item)>125) 
+																$descripcion_item = substr($descripcion_item, 0,125)."...";
 															
 															echo '<tr> 
 																	<td class="text-center"><strong>'.$items['qty'].'</strong></td>
-																	<td class="miniCartProductThumb"><img style="width: 8rem;" src="'.$compras[$contador]['imagen'].'" alt="img">'.$compras[$contador]['nombre'].'</td>
-																	<td style="max-width: 25rem;"><a href="javascript:void(0);">'.$compras[$contador]['descripcion'].'</a></td>
+																	<td class="miniCartProductThumb"><img style="width: 8rem;" src="'.$img_item.'" alt="img"><br/>'
+																			.$compras[$contador]['nombre'].'</td>
+																	<td style="max-width: 25rem;"><a  title="'.$compras[$contador]['descripcion'].'");">'.$descripcion_item.'</a></td>
 																	<td>
 												                        <span> '.($compras[$contador]['puntos']*$cantidad).' </span>
 																	</td>

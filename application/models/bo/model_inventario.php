@@ -29,40 +29,53 @@ class model_inventario extends CI_Model
 	}
 	
 	function Obtener_Producto_Almacen($almacen,$item){
-		$q=$this->db->query('SELECT 
-								    p . *, i . *, m.`real`, m.costo, m.costo_publico
-								FROM
-								    mercancia m,
-								    producto p,
-								    inventario i
-								where
-								    p.id = m.sku 
-									and m.id = i.id_mercancia
-									and i.id_mercancia = "'.$item.'" 
-								    and i.id_almacen = "'.$almacen.'" 
-								group by p.id,p.nombre ');
+		
+		$query = "SELECT
+						    m.id item, p.*, i.*, m.`real`, m.costo, m.costo_publico
+						FROM
+						    mercancia m,
+						    producto p,
+						    inventario i
+						WHERE
+								i.id_mercancia = m.sku
+								AND p.id = m.sku
+						        AND m.id = '".$item."'
+						        AND i.id_almacen = '".$almacen."'
+						GROUP BY p.id , p.nombre";
+		
+		$q=$this->db->query($query);
 		return $q->result();
 	}
 	
 	function Obtener_Productos_Almacen($almacen){
-		$q=$this->db->query('SELECT 
-								    p . *, i . *, m.`real`,
-									m.costo, m.costo_publico,t.id id_red,t.nombre red
+		$query="SELECT
+								    m.id item,
+								    p.*,
+								    i.*,
+								    m.`real`,
+								    m.costo,
+								    m.costo_publico,
+								    t.id id_red,
+								    t.nombre red
 								FROM
+								    inventario i,
 								    mercancia m,
 								    producto p,
-								    inventario i,
-									items v,
-									tipo_red t
-								where
-								    p.id = m.sku 
-									and v.id = m.id
-									and t.id = v.red
-									and m.id = i.id_mercancia
-								    and i.id_almacen ="'.$almacen.'" 
-								group by p.id,p.nombre ');
+								    items vi,
+								    tipo_red t
+								WHERE
+								    i.id_mercancia = m.sku
+								    	AND p.id = m.sku
+								        AND vi.id = m.id
+								        AND t.id = vi.red
+								        AND m.id_tipo_mercancia = 1
+								        AND i.id_almacen = ".$almacen."
+								GROUP BY p.id , p.nombre
+								ORDER BY p.id";
+		$q=$this->db->query($query);
 		return $q->result();
 	}
+	
 	function getAlldocumento(){
 		$q=$this->db->query('select * from documento_inventario ');
 		return $q->result();
@@ -164,7 +177,16 @@ class model_inventario extends CI_Model
   }
   
   function consultar_en_inventario($mercancia,$destino){
-  	$query = 'select * from inventario where id_almacen = '.$destino.' and id_mercancia = '.$mercancia;
+  	$query = "SELECT 
+                        i.*
+                    FROM
+                        inventario i ,
+                    	mercancia m
+                    WHERE
+                        i.id_almacen = $destino 
+                        AND i.id_mercancia = m.sku  
+						AND m.id_tipo_mercancia = 1 
+                    	AND m.id = ".$mercancia;
 	$q=$this->db->query($query);
   	return $q->result();
   }

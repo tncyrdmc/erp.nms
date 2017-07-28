@@ -327,6 +327,8 @@ class comercial extends CI_Controller
 		$id_red        = 0;
 			//$id_red        = $_POST['id_red'];
 		
+		$afiliados = array();
+		
 		if(isset($_POST['nombre_buscado'])){
 			$longitud_nombre =	strlen($_POST['nombre_buscado']);
 			$id_red        = 0;
@@ -406,7 +408,7 @@ class comercial extends CI_Controller
 			}
 		}
 
-		if ( $afiliados[0]==NULL){
+		if (sizeof($afiliados)==0){
 			$error = "El afiliado que estas buscando no existe.";
 			$this->session->set_flashdata('error', $error);
 			redirect('/bo/comercial/red_tabla?id_red='.$id_red.'');
@@ -2100,7 +2102,7 @@ class comercial extends CI_Controller
    	$this->template->set_theme('desktop');
    	$this->template->set_layout('website/main');
    		if($type==8||$type==9){
-			$data = array("user" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
+			$data = array("user2" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
 			$header = $type==8 ? 'CEDI' : 'Almacen';
 			$this->template->set_partial('header', 'website/'.$header.'/header2',$data);
 		}else{
@@ -2183,7 +2185,7 @@ class comercial extends CI_Controller
 		$this->template->set_theme('desktop');
         $this->template->set_layout('website/main');
         if($type==8||$type==9){
-			$data = array("user" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
+			$data = array("user2" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
 			$header = $type==8 ? 'CEDI' : 'Almacen';
 			$this->template->set_partial('header', 'website/'.$header.'/header2',$data);
 		}else{
@@ -2223,7 +2225,7 @@ class comercial extends CI_Controller
   	$this->template->set_theme('desktop');
   	$this->template->set_layout('website/main');
   		if($type==8||$type==9){
-			$data = array("user" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
+			$data = array("user2" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
 			$header = $type==8 ? 'CEDI' : 'Almacen';
 			$this->template->set_partial('header', 'website/'.$header.'/header2',$data);
 		}else{

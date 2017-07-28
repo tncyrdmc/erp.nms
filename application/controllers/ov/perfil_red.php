@@ -401,6 +401,7 @@ class perfil_red extends CI_Controller
 
 		$pais=$this->modelo_dashboard->get_user_country_code($_POST['id']);
 		
+		
 		$usuario =$this->model_perfil_red->datos_perfil($_POST['id']);
 		$edad    =$this->model_perfil_red->edad($_POST['id']);
 		$telefonos    =$this->model_perfil_red->telefonos($_POST['id']);
@@ -410,57 +411,23 @@ class perfil_red extends CI_Controller
 		$comision  = $this->model_afiliado->ComisionUsuario($_POST['id']);
 		$bonos  = $this->model_afiliado->BonosUsuario($_POST['id']);
 		$puntos  = $this->model_afiliado->PuntosUsuario($_POST['id']);
+		$titulo=$this->titulo->getNombreTituloAlcanzadoAfiliado($_POST['id'],date('Y-m-d'));		
 		
-		echo '<div class="row"><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">';
-		echo '<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-				<img alt="'.$usuario[0]->nombre.'" src="'.$img_perfil.'" style="max-width: 100%; max-height: 100%">
-			</div>';
-		echo '<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-				<div class="demo-icon-font">Pais
-					<img class="flag flag-'.strtolower($pais).'" >
-               	</div>';
-		echo '
-				<div class="row">Id: <b>'.$_POST["id"].'</b></div>';
+		$this->template->set("img_perfil",$img_perfil);
+		$this->template->set("id",$_POST['id']);
+		$this->template->set("usuario",$usuario);
+		$this->template->set("username",$username[0]->username);
+		$this->template->set("compras",$compras);
+		$this->template->set("puntos",$puntos);
+		$this->template->set("comision",$comision);
+		$this->template->set("bonos",$bonos);
+		$this->template->set("titulo",$titulo);
+		$this->template->set("edad",$edad);
+		$this->template->set("telefonos",$telefonos);
+		$this->template->set("dir",$dir);
+		$this->template->set("pais",$pais);
 		
-		echo '<div class="row">Username: <b>'.$username[0]->username.'</b></div>';
-		echo '<div class="row">Nombre: <b>'.$usuario[0]->nombre.'</b></div>';
-		echo '<div class="row">Apellido: <b>'.$usuario[0]->apellido.'</b></div>';
-		echo '<div class="row">Nacimiento: <b>'.$usuario[0]->nacimiento.'</b></div>';
-		echo '<div class="row">Edad: <b>'.$edad[0]->edad.'</b></div>';
-		echo '<div class="row">Email: <b>'.$usuario[0]->email.'</b></div>';
-		echo '<div class="row">Dirección: <b>'.$dir[0]->calle.' '.$dir[0]->colonia.' '.$dir[0]->municipio.' '.$dir[0]->estado.' '.$dir[0]->cp.'</b></div>';
-		echo '<div class="row">Teléfono(s) fijo(s): ';
-		foreach ($telefonos as $key)
-		{
-			if($key->tipo=='Fijo')
-			{
-				echo '<b>'.$key->numero."</b><br />";
-			}
-		}
-		echo '</div>';
-		echo '<div class="row">Teléfono(s) Movil: ';
-		foreach ($telefonos as $key)
-		{
-			if($key->tipo=='Móvil')
-			{
-				echo '<b>'.$key->numero."</b><br />";
-			}
-		}
-		echo '</div><br>';
-		echo '<div class="row">Compras: $ <b>'.number_format($compras[0]->comprast==0 ? $compras[0]->compras : $compras[0]->comprast,2).'</b></div>';
-		echo '<div class="row">Comisiones: $ <b>'.number_format($comision+$bonos,2).'</b></div>';
-		echo '<div class="row">Puntos comisionables:  <b>'.number_format($puntos[0]->puntos==0 ? $puntos[0]->puntosu : $puntos[0]->puntos,2).'</b></div>';
-		
-		$titulo=$this->titulo->getNombreTituloAlcanzadoAfiliado($_POST['id'],date('Y-m-d'));
-		
-		if($titulo!=NULL)
-			echo '<ul id="sparks" class="">
-					<li class="sparks-info">
-					 <h5>RANGO<span class="txt-color-yellow"><i class="fa fa-trophy fa-2x"></i>'.$titulo.'</span></h5>
-					 <div class="sparkline txt-color-yellow hidden-mobile hidden-md hidden-sm"></div>
-					</li>
-				</ul>';
-		echo '</div></div></div>';
+		$this->template->build('website/ov/perfil_red/detalle');
 	}
 	
 	function detalle_usuario2()

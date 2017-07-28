@@ -33,7 +33,7 @@ class POS extends CI_Controller
 		
 		$style=$this->modelo_dashboard->get_style($id);
 		$this->template->set("cajero",$usuario[0]->nombre." ".$usuario[0]->apellido);
-		$data = array("user" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
+		$data = array("user2" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
 		$this->template->set("style",$style);
 
 		$this->template->set_theme('desktop');
@@ -448,7 +448,7 @@ class POS extends CI_Controller
 	
 		if(($productos) && ($productos[0]->cantidad > $productos[0]->inventario)){
 				
-			$pedidos = $this->modelo_cedi->setItemPOS($productos[0]->id_mercancia,$id,$almacen[0]->cedi);
+			$pedidos = $this->modelo_cedi->setItemPOS($productos[0]->item,$id,$almacen[0]->cedi);
 				
 			$this->printItems($pedidos);
 	

@@ -25,7 +25,7 @@
 <!-- include pace script for automatic web page progress bar  -->
 
 <div id="content">
- <div class="navbar navbar-tshop navbar-fixed-top megamenu" role="navigation" id="cart_cont" style="background: #2980b9 ! important;">
+ <div class="navbar navbar-tshop navbar-fixed-top megamenu" role="navigation" id="cart_cont" style="background: <?= $style[0]->btn_1_color;?> !important;">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-cart"> <i style="color : #fff;" class="fa fa-shopping-cart fa-2x"> </i> <span style="color : #fff;" class="cartRespons"> Cart (<?php echo $this->cart->total_items(); ?> ) </span> </button>
       <a style="color : #fff;margin-left:4rem;" class="navbar-brand titulo_carrito" href="/ov/dashboard" > <i class="fa fa-arrow-circle-left"></i> Atras &nbsp;</a> 
@@ -85,28 +85,41 @@
     
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-      <?php if(isset($mostrarMercancia)){
-		      	if($mostrarMercancia==1)
-		      		echo ' <li class="dropdown megamenu-fullwidth"> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(5)"> Membresia </a></li>';
-		      	if($mostrarMercancia==2)
-		      		echo '<li class="dropdown megamenu-fullwidth"> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(4)"> Paquetes de Inscripción </a></li>';
-		        if($mostrarMercancia==3){
-		        	echo '<li class="dropdown megamenu-fullwidth"> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(1)"> Productos </a></li>
-						  <li class="dropdown megamenu-80width "> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(2)"> Servicios </a></li>
-						  <li class="dropdown megamenu-fullwidth"> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(3)"> Combinados </a></li>';
-		        }
-      	} else {?>
-        <li class="active"> <a onclick="show_todos()"> Todos </a> </li>
-        <li class="dropdown megamenu-fullwidth"> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(1)"> Productos </a></li>
-        <li class="dropdown megamenu-80width "> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(2)"> Servicios </a></li>
-        <li class="dropdown megamenu-fullwidth"> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(3)"> Combinados </a></li>
-        <li class="dropdown megamenu-fullwidth"> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(5)"> Membresia </a></li>
-        <li class="dropdown megamenu-fullwidth"> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(4)"> Paquetes de Inscripción </a></li>
-     	<?php }?>
+      <?php
+      									$tiposMercancia = array(
+											1 => "Productos",
+											2 => "Servicios",
+											3 => "Combinados",
+											4 => "Paquetes de Inscripción",
+											5 => "Membresías"
+										);
+
+								if(isset($mostrarMercancia)){									
+			      					if($mostrarMercancia>3){
+			      						unset($tiposMercancia[1]);
+			      						unset($tiposMercancia[2]);
+			      						unset($tiposMercancia[3]);
+			      					}
+
+			      					if($mostrarMercancia>2){
+			      						unset($tiposMercancia[4]);
+			      					}
+
+      							}
+
+      							if(sizeof($tiposMercancia)==5){
+      								echo '<li class="active"> <a onclick="show_todos()"> Todos </a> </li>';
+      							}
+
+      							foreach ($tiposMercancia as $key => $value) {
+      								echo '<li class="dropdown megamenu-fullwidth"> <a data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia('.$key.')"> '.$value.'</a></li>';
+      							}	     	
+
+      	?>
       </ul>
       <!--- this part will be hidden for mobile version -->
       <div class="nav navbar-nav navbar-right hidden-xs">
-        <div class="dropdown  cartMenu " style="background: rgb(57, 167, 241) none repeat scroll 0% 0%;"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-shopping-cart fa-2x"> </i> <span class="cartRespons"> Cart (<?php echo $this->cart->total_items(); ?> ) </span> <b class="caret"> </b> </a>
+        <div class="dropdown  cartMenu " style="background: <?= $style[0]->btn_2_color;?> none repeat scroll 0% 0%;"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-shopping-cart fa-2x"> </i> <span class="cartRespons"> Cart (<?php echo $this->cart->total_items(); ?> ) </span> <b class="caret"> </b> </a>
           <div class="dropdown-menu col-lg-4 col-xs-12 col-md-4 ">
             <div class="w100 miniCartTable scroll-pane">
               <table> 
@@ -174,7 +187,7 @@
 	  			<div class="carousel-inner">
 				<!-- Slide 1 -->
 				<div class="item active" style="height: 100%; margin-bottom: 2rem;">
-					<img src="/template/img/demo/m3.jpg" alt="demo user">
+					<img src="/media/imagenes/m3.jpg" alt="demo user">
 				</div>
 			</div>
 				<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false">
@@ -201,9 +214,10 @@
 								<div class="dropdown">
 										<?php foreach ($grupos as $grupo) {
 												if ($red->nombre == $grupo->red ){
-										?>
-											<a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-target="#" onclick="show_todos_categoria('<?= $grupo->id_grupo;?>');" class="btn btn-block"><?php echo $grupo->descripcion; ?></a>
-										<?php } }?>
+													echo '<a id="dLabel" style="background:'.$style[0]->btn_1_color.' !important" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-target="#" 
+														onclick="show_todos_categoria('.$grupo->id_grupo.');" class="btn btn-block">'.$grupo->descripcion.'</a>';
+												} 
+										}?>
 
 								</div>
 								<br>
@@ -238,24 +252,14 @@
 						<div class="widget-body">
 								<h3>Tipos Mercancia</h3>
 								<div class="dropdown">
-								<?php if(isset($mostrarMercancia)){
-		      					if($mostrarMercancia==1)
-		      						echo ' <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(5)"> Membresia </a>';
-		      					if($mostrarMercancia==2)
-		      						echo '<a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(4)"> Paquetes de Inscripción </a>';
-		        				if($mostrarMercancia==3){
-		        					echo '<a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(1)"> Productos </a>
-						  				  <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(2)"> Servicios </a>
-						  				  <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(3)"> Combinados </a>';
-		        				}
-      							} else {?>
-									<a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" onclick="show_todos()"> Todos </a> </li>
-       								<a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(1)"> Productos </a>
-        							<a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(2)"> Servicios </a>
-        							<a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(3)"> Combinados </a>
-        							<a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(5)"> Membresia </a>
-        							<a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle" onclick="show_todos_tipo_mercancia(4)"> Paquetes de Inscripción </a>
-								<?php }?>
+								<?php 
+
+								foreach ($tiposMercancia as $key => $value) {
+      									echo ' <a id="dLabel" style="background:'.$style[0]->btn_1_color.' !important" role="button" data-toggle="dropdown" class="btn btn-primary btn-block" data-toggle="dropdown" class="dropdown-toggle"
+      										 onclick="show_todos_tipo_mercancia('.$key.')"> '.$value.' </a>';
+      							}	
+
+      							?>
 								</div>
 								<br>
 						</div>
@@ -299,10 +303,10 @@
 											<div class="carousel-inner">
 												<!-- Slide 1 -->
 												<div class="item active">
-													<img src="/media/imagenes/carrito/banner1.png" alt="">
+													<img src="/logo.png" alt="">
 													<div class="carousel-caption caption-right">
 												<!--  		<h4>Title 1</h4>
-														<p>
+														<p>/media/imagenes/carrito/banner1.png
 															Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
 														</p>
 														<br>
@@ -311,10 +315,10 @@
 												</div>
 												<!-- Slide 2 -->
 												<div class="item">
-													<img src="/media/imagenes/carrito/banner2.png" alt="">
+													<img src="/logo.png" alt="">
 													<div class="carousel-caption caption-left">
 													<!--  	<h4>Title 2</h4>
-														<p>
+														<p>/media/imagenes/carrito/banner2.png
 															Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
 														</p>
 														<br>
@@ -323,10 +327,10 @@
 												</div>
 												<!-- Slide 3 -->
 												<div class="item">
-													<img src="/media/imagenes/carrito/banner3.png" alt="">
+													<img src="/logo.png" alt="">
 													<div class="carousel-caption caption-left">
 													<!--  	<h4>Title 2</h4>
-														<p>
+														<p>/media/imagenes/carrito/banner3.png
 															Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
 														</p>
 														<br>

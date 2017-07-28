@@ -46,7 +46,7 @@ class perfil extends CI_Controller
 		
 		
 		$this->template->set("style",$style);
-		$data = array("user" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
+		$data = array("user2" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
 		
 
 		$this->template->set_theme('desktop');

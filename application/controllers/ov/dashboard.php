@@ -142,17 +142,12 @@ class dashboard extends CI_Controller
 
 		$image=$this->modelo_dashboard->get_images($id);
 		$fondo="/template/img/portada.jpg";
-		$user="/template/img/empresario.jpg";
+		$user="/template/img/avatars/male.png";
 		
 		foreach ($image as $img) {
-			$cadena=explode(".", $img->img);
-			if($cadena[0]=="user")
-			{
+			$url=getcwd().$img->url;
+			if(file_exists($url)){
 				$user=$img->url;
-			}
-			if($cadena[0]=="fondo")
-			{
-				$fondo=$img->url;
 			}
 		}
 		

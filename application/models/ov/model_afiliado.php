@@ -732,7 +732,8 @@ class model_afiliado extends CI_Model{
 		$query ="SELECT ".$puntos." puntos , ".$puntosu." puntosu";
 		
 		$q = $this->db->query($query);
-		return $puntos;
+		$q = $q->result();
+		return $q;
 	}
 	
 	function ComisionUsuario($id){

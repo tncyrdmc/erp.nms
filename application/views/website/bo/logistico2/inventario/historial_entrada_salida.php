@@ -28,24 +28,47 @@
 									    	"<tr>".
 										        "<td>".$entrada->id_inventario_historial."</td>".
 										        "<td>".$entrada->fecha."</td>";
-									     foreach ($Cedis as $Cedi){
-									    	if($Cedi->id_cedi==$entrada->id_origen){
-									    	echo	"<td>".$Cedi->nombre." (".$Cedi->tipo.")</td>";
-									    	}
-									    
-									      }
-							            if($entrada->id_origen=='0'){
-									    	 echo	"<td>".$entrada->otro_origen."</td>";
-									      }
-									
-										 foreach ($Cedis as $Cedi){
-												    	if($Cedi->id_cedi==$entrada->id_destino){
-												    		echo	"<td>".$Cedi->nombre." (".$Cedi->tipo.")</td>";
-												        }
-									      }		
-							            if($entrada->id_destino=='0'){
-									      	echo	"<td>".$entrada->otro_origen."</td>";
-									      }
+									     		$origen ="";$proveedor = "";
+									      	 	foreach ($Cedis as $Cedi){
+										    		if($Cedi->id_cedi==$entrada->id_origen){
+										    			$cedi_origen = "<td>".$Cedi->nombre." (".$Cedi->tipo.")</td>";
+													    if($Cedi->tipo == "Proveedor"){
+												   			$proveedor = $cedi_origen;
+														}else{
+												   			$origen = $cedi_origen;
+												   		}
+										    		}										    	 
+										      	}
+
+												if(strlen($origen)<2) 
+													$origen = $proveedor;
+
+											    if($origen){
+											    	echo $origen;
+											   	}else{
+											      	echo "<td>".$entrada->otro_origen."</td>";
+											    }
+										   
+									      		$destino ="";$proveedor = "";
+										      	foreach ($Cedis as $Cedi){
+													if($Cedi->id_cedi==$entrada->id_destino){
+													 	$cedi_destino = "<td>".$Cedi->nombre." (".$Cedi->tipo.")</td>";
+														if($Cedi->tipo == "Proveedor"){
+													    	$proveedor = $cedi_destino;
+													    }else{
+													    	$destino = $cedi_destino;
+													    }
+												    }
+										      	}		
+										      	
+										      	if(strlen($destino)<2) 
+													$destino = $proveedor;
+
+											    if(strlen($destino)>2){
+											    	echo $destino;
+											   	}else{
+											      	echo "<td>".$entrada->otro_origen."</td>";
+											    }
 									      foreach ($Documento as $documento){
 									      	if($documento->id_doc==$entrada->id_documento){
 									      		echo	"<td>".$documento->nombre."</td>";

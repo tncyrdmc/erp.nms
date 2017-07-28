@@ -180,17 +180,17 @@
 				      <tr>
 				        <td><?php echo $afiliado->id;?></td>
 				        
-				       <? 
-				       $afiliados_imagen="/template/img/empresario.jpg";
+				      <?php
+				       $afiliados_imagen="/template/img/avatars/male.png";
 				       foreach ($image as $img) {
 				       	   if($img->id_user==$afiliado->id){
-								$cadena=explode(".", $img->img);
-								if($cadena[0]=="user")
-								{
-									$afiliados_imagen=$img->url;
-								}
+					       	   	$url=getcwd().$img->url;
+					       	   	if(file_exists($url)){
+					       	   		$afiliados_imagen=$img->url;
+					       	   	}
 				       	   }
-						}?>
+						}
+						?>
 				        
 		                <td><img style="width: 10rem;" src="<?php echo $afiliados_imagen?>"></img></td>
 		                <td><?php echo $afiliado->username?></td>

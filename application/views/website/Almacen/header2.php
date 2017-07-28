@@ -50,7 +50,7 @@
 						<ul class="nav navbar-nav navbar-right">
 							<li class="text-center">
 								<a href="/Almacen/perfil">
-								<i style="font-size: 2rem;" class="fa fa-user"></i> <br/><?=$user;?></a>
+								<i style="font-size: 2rem;" class="fa fa-user"></i> <br/><?=$user2;?></a>
 							</li>
 							<li class="dropdown">
 							<div id="logout" class="btn-header transparent" style="background: rgb(206, 53, 44);">

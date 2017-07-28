@@ -380,34 +380,34 @@ FROM cedi p , City c, Country co where p.ciudad = c.ID and c.CountryCode = co.Co
 	}
 	
 	function getTemporal($id) {
-		$query = 'select 
-										    p.codigo_barras,
-										    p.nombre,
-										    (case
-										        when (v.costo = "DETAL") 
-												then m.costo_publico
-										        else m.costo
-										    end) unidad,
-											m.puntos_comisionables,
-										   	i.cantidad inventario,
-										   	p.inventario minimo, 
-										   	v . *
-										from
-										    pos_venta_temporal v,
-										    producto p,
-										    mercancia m,
-											users_cedi UC,
-											users u,
-											inventario i
-										where
-										    p.id = m.sku 
-												and m.id = i.id_mercancia 
-												and i.id_mercancia =  v.item
-												and i.id_almacen = UC.id_cedi
-												and UC.username = u.username	
-												and u.id = v.id_user
-										        and v.id_temporal = "'.$id.'" 
-										        and v.estatus = "ACT"';
+		$query = "SELECT
+					    p.codigo_barras,
+					    p.nombre,
+					    (CASE
+					        WHEN (v.costo = 'DETAL') THEN m.costo_publico
+					        ELSE m.costo
+					    END) unidad,
+					    m.puntos_comisionables,
+					    i.cantidad inventario,
+					    p.inventario minimo,
+					    v.*
+					FROM
+					    pos_venta_temporal v,
+					    producto p,
+					    mercancia m,
+					    users_cedi UC,
+					    users u,
+					    inventario i
+					WHERE
+					    p.id = m.sku AND i.id_mercancia = m.sku
+					        AND m.id = v.item
+					        AND i.id_almacen = UC.id_cedi
+					        AND UC.username = u.username
+					        AND u.id = v.id_user
+					        AND v.id_temporal = '".$id."'
+					        AND v.estatus = 'ACT'
+					GROUP BY
+							v.item";
 		
 		$q = $this->db->query($query);
 		return $q->result();
@@ -435,8 +435,8 @@ FROM cedi p , City c, Country co where p.ciudad = c.ID and c.CountryCode = co.Co
 											inventario i
 										where
 										    p.id = m.sku
-												and m.id = i.id_mercancia
-												and i.id_mercancia =  v.item
+												AND i.id_mercancia = m.sku
+					        					AND m.id = v.item
 												and v.item = '.$mercancia.'
 												and i.id_almacen = UC.id_cedi
 												and UC.username = u.username
@@ -470,10 +470,13 @@ FROM cedi p , City c, Country co where p.ciudad = c.ID and c.CountryCode = co.Co
 
 	
 	private function getTemporalID($id) {
-		$q = $this->db->query('select * 
-								from pos_venta_temporal 
-								where id_user = '.$id.' 
-									and estatus = "ACT"');
+		$q = $this->db->query("SELECT
+								    *, REPLACE(id_temporal, '_', '') id
+								FROM
+								    pos_venta_temporal
+								WHERE
+								    id_user = ".$id." AND estatus = 'ACT'
+								ORDER BY id DESC");
 		
 		return $q->result(); 
 	}

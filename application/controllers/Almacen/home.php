@@ -35,7 +35,7 @@ class home extends CI_Controller
 		$productos = $this->model_inventario->Obtener_Productos_Almacen($almacen[0]->cedi);		
 		
 		$this->template->set("style",$style);
-		$data = array("user" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
+		$data = array("user2" => $usuario[0]->nombre."<br/>".$usuario[0]->apellido);
 		$this->template->set("productos",$productos);
 		
 
