@@ -240,7 +240,11 @@ class calculador_bono extends CI_Model
 	}
 	
 	private function repartirPorcentajeAscendente($id_bono,$id_bono_historial,$red,$condicion_red,$verticalidad,$id_usuario,$fecha,$nivel,$valor) {
-		if($nivel==0){
+		
+	    if($valor==0)
+	        return;
+	    
+	    if($nivel==0){
 			if($this->usuarioPuedeRecibirBono($id_bono, $id_usuario, $fecha)){
 				$repartidorComisionBono=new $this->repartidor_comision_bono();
 				$valorTotal=(($this->valorCondicion*$valor)/100);
@@ -254,7 +258,11 @@ class calculador_bono extends CI_Model
 	}
 
 	private function repartirAscendenteODesendente($id_bono,$id_bono_historial,$red,$condicion_red,$verticalidad,$id_usuario,$fecha,$nivel,$valor) {
-		if($nivel==0){
+		
+	    if($valor==0)
+	        return;
+	    
+	    if($nivel==0){
 			if($this->usuarioPuedeRecibirBono($id_bono, $id_usuario, $fecha)){
 				$repartidorComisionBono=new $this->repartidor_comision_bono();
 				$repartidorComisionBono->repartirComisionBono($repartidorComisionBono->getIdTransaccionPagoBono(),$id_usuario,$id_bono,$id_bono_historial,$valor);

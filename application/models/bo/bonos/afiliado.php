@@ -219,48 +219,76 @@ class afiliado extends CI_Model
 	}
 	
 	function getAfiliadosIntervaloDeTiempo($id_afiliado,$red,$tipo,$tipoDeBusquedaEnLaRed,$nivel,$fechaInicio,$fechaFin){
-			
-		if($tipoDeBusquedaEnLaRed=="EQU"){
-			$q=$this->db->query("SELECT count(*) as directos FROM users u,afiliar a
-								where u.id=a.id_afiliado and a.directo = ".$id_afiliado." and a.id_red = ".$red." and (u.created BETWEEN '".$fechaInicio."' AND '".$fechaFin."')");
-			$datos= $q->result();
-
-			$this->setTotalAfiliados($datos[0]->directos);
-
-			return $this->getTotalAfiliados();
-			
-		}else if($tipoDeBusquedaEnLaRed=="DEB") {
-
-			$totalPata1=0;
-			$totalPata2=0;
-			$this->setTotalAfiliados(0);
-				
-			$idAfiliadopata1=$this->getAfiliadoDirectoPorPosicion($id_afiliado,$red,0);
-
-			if($this->getDirectoAfiliado($idAfiliadopata1,$red)==$id_afiliado)
-				$totalPata1=1;
-			
-			$this->getCantidadDeAfiliadosDebajoDeHijo($idAfiliadopata1,$id_afiliado,$red,$tipo,$nivel);
-			
-			$totalPata1+=$this->getTotalAfiliados();
-			
-			$this->setTotalAfiliados(0);
-			
-			$idAfiliadopata2=$this->getAfiliadoDirectoPorPosicion($id_afiliado,$red,1);
-
-			if($this->getDirectoAfiliado($idAfiliadopata2,$red)==$id_afiliado)
-				$totalPata2=1;
-					
-			$this->getCantidadDeAfiliadosDebajoDeHijo($idAfiliadopata2,$id_afiliado,$red,$tipo,$nivel);
-			$totalPata2+=$this->getTotalAfiliados();
-			
-			
-			if($totalPata1>=$totalPata2)
-				return $totalPata2;
-			return $totalPata1;
-		}
-
-
+	    
+	    if($tipoDeBusquedaEnLaRed=="EQU"){
+	        
+	        if($tipo == "DIRECTOS"){
+	            return $this->getAfiliadosEquitativoDirectos( $id_afiliado,$red,$fechaInicio,$fechaFin);
+	        }else{
+	            return $this->getAfiliadosEquitativoRed($id_afiliado,0,$red,$fechaInicio,$fechaFin);
+	        }
+	        
+	    }else if($tipoDeBusquedaEnLaRed=="DEB") {
+	        
+	        return $this->getAfiliadosPataDebil ($id_afiliado,$red,$tipo,$nivel);
+	        
+	    }
+	    
+	    
+	}
+	
+	private function getAfiliadosEquitativoDirectos($id_afiliado,$red,$fechaInicio,$fechaFin) {
+	    
+	    $query = "SELECT
+						    COUNT(*) AS directos
+						FROM
+						    users u,
+						    afiliar a
+						WHERE
+						    u.id = a.id_afiliado
+						    AND a.directo = ".$id_afiliado."
+						    AND a.id_red = ".$red."
+						    AND u.created BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59';";
+	    
+	    $q=$this->db->query($query);
+	    
+	    $datos= $q->result();
+	    
+	    $this->setTotalAfiliados($datos[0]->directos);
+	    
+	    return $this->getTotalAfiliados();
+	}
+	
+	
+	private function getAfiliadosPataDebil($id_afiliado,$red,$tipo,$nivel) {
+	    $totalPata1=0;
+	    $totalPata2=0;
+	    $this->setTotalAfiliados(0);
+	    
+	    $idAfiliadopata1=$this->getAfiliadoDirectoPorPosicion($id_afiliado,$red,0);
+	    
+	    if($this->getDirectoAfiliado($idAfiliadopata1,$red)==$id_afiliado)
+	        $totalPata1=1;
+	        
+	    $this->getCantidadDeAfiliadosDebajoDeHijo($idAfiliadopata1,$id_afiliado,$red,$tipo,$nivel);
+	        
+	    $totalPata1+=$this->getTotalAfiliados();
+	        
+	    $this->setTotalAfiliados(0);
+	        
+	    $idAfiliadopata2=$this->getAfiliadoDirectoPorPosicion($id_afiliado,$red,1);
+	        
+	    if($this->getDirectoAfiliado($idAfiliadopata2,$red)==$id_afiliado)
+	       $totalPata2=1;
+	            
+	    $this->getCantidadDeAfiliadosDebajoDeHijo($idAfiliadopata2,$id_afiliado,$red,$tipo,$nivel);
+	    $totalPata2+=$this->getTotalAfiliados();
+	            
+	            
+	    if($totalPata1>=$totalPata2)
+	       return $totalPata2;
+	                
+	    return $totalPata1;
 	}
 	
 	function getCantidadDeAfiliadosDebajoDe($id_afiliado,$red,$tipo,$nivel){
@@ -411,112 +439,117 @@ class afiliado extends CI_Model
 	}
 	
 	function getPuntosTotalesPersonalesIntervalosDeTiempo($id_afiliado,$id_red,$id_tipo_mercancia,$id_mercancia,$fechaInicio,$fechaFin) {
-
-		$id_mercancia=$this->separarMercanciasConsulta($id_mercancia);
-		$id_tipo_mercancia=$id_tipo_mercancia;
-
-		$cualquiera="0"; 
-		 
-		if($id_mercancia===$cualquiera&&$id_tipo_mercancia===$cualquiera){
-			$cedi = "+ (select
-						 (case when sum(p.puntos) then sum(p.puntos) else 0 end)
-						from pos_venta o,venta v,pos_venta_item p,items i
-						where
-							i.id = p.item
-							and i.red = ".$id_red."
-							and p.id_venta = o.id_venta
-							and o.id_venta = v.id_venta
-							and v.id_user = ".$id_afiliado."
-							and v.id_estatus = 'ACT'
-							and v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin."'
+	    
+	    $cualquiera="0";$where ="";
+	    
+	    if($id_mercancia!==$cualquiera){
+	        $where .= "AND i.id in ($id_mercancia) ";
+	    }
+	    
+	    if($id_tipo_mercancia!==$cualquiera){
+	        $where .= "AND i.id_tipo_mercancia in ($id_tipo_mercancia) ";
+	    }
+	    
+	    $cedi = "(SELECT
+								(CASE WHEN SUM(p.puntos)
+									THEN SUM(p.puntos)
+							        ELSE 0 END) cedi
+							FROM
+								pos_venta o,
+								venta v,
+							    pos_venta_item p,
+							    items i
+							WHERE
+								i.id = p.item
+								AND i.red = ".$id_red."
+								AND p.id_venta = o.id_venta
+								AND o.id_venta = v.id_venta
+								AND v.id_user = ".$id_afiliado."
+								AND v.id_estatus = 'ACT'
+								AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
 						)";
-			
-			$cart = "(SELECT
-							(case when i.puntos_comisionables
-								then sum(i.puntos_comisionables*cvm.cantidad)
-								else 0 end)
-						FROM venta v,cross_venta_mercancia cvm,items i
-									 where (v.id_venta=cvm.id_venta)
-									 and  (i.id=cvm.id_mercancia)
-									 and(v.id_user=".$id_afiliado.")
-									 and (i.red=".$id_red.") and v.id_estatus = 'ACT'
-									 and (v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin."')) ";
-				
-			$query = "SELECT ".$cart.$cedi." total";
-			$q=$this->db->query($query);
-			return $q->result();
-		}else if($id_mercancia!==$cualquiera&&$id_tipo_mercancia===$cualquiera){
-			$q=$this->db->query("SELECT sum(puntos_comisionables) as total FROM venta v,cross_venta_mercancia cvm,items i
-							 where (v.id_venta=cvm.id_venta)
-							 and  (i.id=cvm.id_mercancia)
-							 and (".$id_mercancia.")
-							 and(v.id_user=".$id_afiliado.")
-							 and (i.red=".$id_red.") and v.id_estatus = 'ACT' and (v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin."')");
-			return $q->result();
-		}else if($id_mercancia===$cualquiera&&$id_tipo_mercancia!==$cualquiera){
-			$q=$this->db->query("SELECT sum(puntos_comisionables) as total FROM venta v,cross_venta_mercancia cvm,items i
-							 where (v.id_venta=cvm.id_venta)
-							 and  (i.id=cvm.id_mercancia)
-							 and (i.id_tipo_mercancia=".$id_tipo_mercancia.")
-							 and(v.id_user=".$id_afiliado.")
-							 and (i.red=".$id_red.") and v.id_estatus = 'ACT' and (v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin."')");
-			return $q->result();
-		}else if($id_mercancia!==$cualquiera&&$id_tipo_mercancia!==$cualquiera){
-			$q=$this->db->query("SELECT sum(puntos_comisionables) as total FROM venta v,cross_venta_mercancia cvm,items i
-							 where (v.id_venta=cvm.id_venta)
-							 and  (i.id=cvm.id_mercancia)
-							 and (".$id_mercancia.")
-							 and (i.id_tipo_mercancia=".$id_tipo_mercancia.")
-							 and(v.id_user=".$id_afiliado.")
-							 and (i.red=".$id_red.") and v.id_estatus = 'ACT' and (v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin."')");
-			return $q->result();
-		}
+	    
+	    $cart = "(SELECT
+							    (CASE WHEN SUM(i.puntos_comisionables * cvm.cantidad)
+									THEN SUM(i.puntos_comisionables * cvm.cantidad)
+							        ELSE 0
+							    END) cart
+							FROM
+							    venta v,
+							    cross_venta_mercancia cvm,
+							    items i
+							WHERE
+							    v.id_venta = cvm.id_venta
+								AND i.id = cvm.id_mercancia
+							    AND v.id_user = ".$id_afiliado."
+							    AND i.red = ".$id_red."
+							    AND v.id_estatus = 'ACT'
+							    AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
+						)";
+	    
+	    
+	    $query = "SELECT ".$cart." + ".$cedi." total";
+	    
+	    $q=$this->db->query($query);
+	    return $q->result();
+	    
 	}
-
+	
 	function getValorTotalDelasComprasPersonalesIntervalosDeTiempo($id_afiliado,$id_red,$id_tipo_mercancia,$id_mercancia,$fechaInicio,$fechaFin) {
-
-		$id_mercancia=$this->separarMercanciasConsulta($id_mercancia);
-		$id_tipo_mercancia=$id_tipo_mercancia;
-
-		$cualquiera="0"; 
-		
-		if($id_mercancia===$cualquiera&&$id_tipo_mercancia===$cualquiera){
-			$q=$this->db->query("SELECT sum(costo_total) as total FROM venta v,cross_venta_mercancia cvm,items i
-							 where (v.id_venta=cvm.id_venta)
-							 and  (i.id=cvm.id_mercancia)
-							 and(v.id_user=".$id_afiliado.")
-							 and (i.red=".$id_red.") and v.id_estatus = 'ACT' and (v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin."')");
-			return $q->result();
-		}else if($id_mercancia!==$cualquiera&&$id_tipo_mercancia===$cualquiera){
-
-			$q=$this->db->query("SELECT sum(costo_total) as total FROM venta v,cross_venta_mercancia cvm,items i
-							 where (v.id_venta=cvm.id_venta)
-							 and  (i.id=cvm.id_mercancia)
-							 and (".$id_mercancia.")
-							 and(v.id_user=".$id_afiliado.")
-							 and (i.red=".$id_red.") and v.id_estatus = 'ACT' and (v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin."')");
-			return $q->result();
-		}else if($id_mercancia===$cualquiera&&$id_tipo_mercancia!==$cualquiera){
-
-			$q=$this->db->query("SELECT sum(costo_total) as total FROM venta v,cross_venta_mercancia cvm,items i
-							 where (v.id_venta=cvm.id_venta)
-							 and  (i.id=cvm.id_mercancia)
-						 	 and (i.id_tipo_mercancia=".$id_tipo_mercancia.")
-							 and(v.id_user=".$id_afiliado.")
-							 and (i.red=".$id_red.") and v.id_estatus = 'ACT' and (v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin."')");
-			return $q->result();
-		}else if($id_mercancia!==$cualquiera&&$id_tipo_mercancia!==$cualquiera){
-
-			$q=$this->db->query("SELECT sum(costo_total) as total FROM venta v,cross_venta_mercancia cvm,items i
-							 where (v.id_venta=cvm.id_venta)
-							 and  (i.id=cvm.id_mercancia)
-							 and (".$id_mercancia.")
-						 	 and (i.id_tipo_mercancia=".$id_tipo_mercancia.")
-							 and(v.id_user=".$id_afiliado.")
-							 and (i.red=".$id_red.") and v.id_estatus = 'ACT' and (v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin."')");
-			return $q->result();
-		}
-
+	    
+	    $cualquiera="0";$where ="";
+	    
+	    if($id_mercancia!==$cualquiera){
+	        $where .= "AND i.id in ($id_mercancia) ";
+	    }
+	    
+	    if($id_tipo_mercancia!==$cualquiera){
+	        $where .= "AND i.id_tipo_mercancia in ($id_tipo_mercancia) ";
+	    }
+	    
+	    $cedi = "(SELECT
+								(CASE WHEN SUM(p.valor/p.cantidad)
+									THEN SUM(p.valor/p.cantidad)
+							        ELSE 0 END) cedi
+							FROM
+								pos_venta o,
+								venta v,
+							    pos_venta_item p,
+							    items i
+							WHERE
+								i.id = p.item
+								AND i.red = ".$id_red."
+								AND p.id_venta = o.id_venta
+								AND o.id_venta = v.id_venta
+								AND v.id_user = ".$id_afiliado."
+								AND v.id_estatus = 'ACT'
+								AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
+						)";
+	    
+	    $cart = "(SELECT
+							    (CASE WHEN SUM(cvm.costo_unidad * cvm.cantidad)
+									THEN SUM(cvm.costo_unidad * cvm.cantidad)
+							        ELSE 0
+							    END) cart
+							FROM
+							    venta v,
+							    cross_venta_mercancia cvm,
+							    items i
+							WHERE
+							    v.id_venta = cvm.id_venta
+								AND i.id = cvm.id_mercancia
+							    AND v.id_user = ".$id_afiliado."
+							    AND i.red = ".$id_red."
+							    AND v.id_estatus = 'ACT'
+							    AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
+						)";
+	    
+	    
+	    $query = "SELECT ".$cart." + ".$cedi." total";
+	    
+	    $q=$this->db->query($query);
+	    return $q->result();
+	    
 	}
 
 	private function separarMercanciasConsulta($mercancias){
