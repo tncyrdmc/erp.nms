@@ -186,6 +186,21 @@ class model_inventario extends CI_Model
                         i.id_almacen = $destino 
                         AND i.id_mercancia = m.sku  
 						AND m.id_tipo_mercancia = 1 
+                    	AND m.sku = ".$mercancia;
+	$q=$this->db->query($query);
+  	return $q->result();
+  }
+
+   function consultar_en_logistico($mercancia,$destino){
+  	$query = "SELECT 
+                        i.*
+                    FROM
+                        inventario i ,
+                    	mercancia m
+                    WHERE
+                        i.id_almacen = $destino 
+                        AND i.id_mercancia = m.sku  
+						AND m.id_tipo_mercancia = 1 
                     	AND m.id = ".$mercancia;
 	$q=$this->db->query($query);
   	return $q->result();

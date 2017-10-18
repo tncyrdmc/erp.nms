@@ -277,7 +277,7 @@
 						<div class="col-sm-12 col-md-12 col-lg-12">
 							<div class="row">
 							   <div class="col-sm-12 col-md-12 col-lg-4">
-									<!--Inica la secciion de la perfil y red-->
+									<!--Inica la seccion de la perfil y red-->
 									<div class="well" style=""> <!-- box-shadow: 0px 0px 0px !important;border-color: transparent; -->
 										<fieldset>
 											<legend><b>Perfil y red</b></legend>
@@ -335,10 +335,10 @@
 											</div>
 										</div>
 									</fieldset>
-									<!--Termina la secciion de perfil y red-->
+									<!--Termina la seccion de perfil y red-->
 								</div>
 								<div class="col-sm-12 col-md-12 col-lg-4">
-									<!--Inica la secciion de compras y reportes-->
+									<!--Inica la seccion de compras y reportes-->
 									<div class="well">
 										<fieldset>
 											<legend><b>Compras y comisiones</b></legend>
@@ -396,12 +396,12 @@
 											</div>
 										</fieldset>
 									</div>
-								  <!--Termina la secciion de compras y reportes-->
+								  <!--Termina la seccion de compras y reportes-->
 								</div>
                 				<div class="col-sm-12 col-md-12 col-lg-4">
-									<!--Inica la secciion de compras y reportes-->
+									<!--Inica la seccion general-->
 									<div class="well">
-															<fieldset>
+										<fieldset>
 											<legend><b>General</b></legend>
 											<div class="row">
 												<?php $permiso=$ci->model_permissions->check($id,'encuestas');
@@ -455,41 +455,19 @@
 											</div>
 										</fieldset>
 									</div>
-								  <!--Termina la secciion de compras y reportes-->
+								  <!--Termina la seccion general-->
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 col-md-12 col-lg-12">
-									<!--Inicia la secciion de escuela y negocios-->
+									<!--Inicia la seccion de comunicacion-->
 									<div class="well">
 										<div class="row">
 											<fieldset>
 												<legend><b>Comunicación</b></legend>
 												<div class="col-sm-1">
 												</div>
-												<div class="col-sm-2">
-													<a href="javascript:void(0);">
-														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>;">
-															<div class="row">
-																<i class="fa fa-facebook fa-1x"></i>
-																<i class="fa fa-twitter fa-1x"></i>
-															</div>
-															<div class="row">
-																<i class="fa fa-skype fa-1x"></i>
-																<i class="fa fa-youtube fa-1x"></i>
-															</div>
-															<h5>Redes Sociales</h5>
-														</div>
-													</a>
-												</div>
-												<div class="col-sm-2">
-													<a href="javascript:void(0);">
-														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
-															<i class="fa fa-gift fa-3x"></i>
-															<h5>Promociones</h5>
-														</div>
-													</a>
-												</div>
+												
 												<div class="col-sm-2">
 													<a href="cgeneral/autoresponder">
 														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
@@ -506,30 +484,7 @@
 														</div>
 													</a>
 												</div>
-												<?php $permiso=$ci->model_permissions->check($id,'mensajes');
-												if($permiso){
-												?>
-											<!--  	<div class="col-sm-2">
-													<a href="cgeneral/web_personal">
-														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
-															<i class="fa fa-globe fa-3x"></i>
-															<h5>Web Personal</h5>
-														</div>
-													</a>
-												</div>	-->
-												<?php }?>
-												<?php $permiso=$ci->model_permissions->check($id,'chat');
-												if($permiso){
-												?>
-											<!--  	<div class="col-sm-2">
-													<a href="cgeneral/chat">
-														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
-															<i class="fa fa-weixin fa-3x"></i>
-															<h5>Chat Mi Red</h5>
-														</div>
-													</a>
-												</div> -->
-												<?php }?>
+												
 												<?php $permiso=$ci->model_permissions->check($id,'e_mail');
 												if($permiso){
 												?>
@@ -541,77 +496,19 @@
 														</div>
 													</a>
 												</div>
-												<?php $permiso=$ci->model_permissions->check($id,'soporte_tecnico');
-												if($permiso){
-												?>
-											<!--	<div class="col-sm-2">
-													<a href="cgeneral/soporte_tecnico_ver_redes">
-														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
-															<i class="fa fa-support fa-3x"></i>
-															<h5>Soporte Técnico</h5>
-														</div>
-													</a>
-												</div>-->
-												<?php }?>
-												</fieldset>
-								<!---<div class="row">
-											<div class="col-sm-1">
-												</div>
-												<div class="col-sm-2">
-													<a href="cabecera/sugerencia">
-														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
-															<i class="fa fa-send fa-3x"></i>
-															<h5>Sugerencias</h5>
-														</div>
-													</a>
-												</div>
-								</div>-->
-												<?php }?>
-											<div class="row">
-                      <?php $permiso=$ci->model_permissions->check($id,'videollamadas');
-											if($permiso){
-											?>
-											<!-- cgeneral/videollamada -->
-											<!-- <div class="col-sm-12">
-												<a href="#">
-													<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
-														<i class="fa fa-video-camera fa-3x"></i>
-														<h5>Vídeollamadas</h5>
-													</div>
-												</a>
-											</div> -->
-											
-											<?php }?>
-											<?php $permiso=$ci->model_permissions->check($id,'social_network');
-												if($permiso){
-												?>
-											<!--		<div class="col-sm-12">
-													<a href="cgeneral/social_network">
-														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
-															<div class="row">
-																<i class="fa fa-facebook fa-1x"></i>
-																<i class="fa fa-twitter fa-1x"></i>
-															</div>
-															<div class="row">
-																<i class="fa fa-skype fa-1x"></i>
-																<i class="fa fa-youtube fa-1x"></i>
-															</div>
-															<h5>Social network</h5>
-														</div>
-													</a>
-												</div>-->
+												
 												<?php }?>	 
 											</div>
 
 											
 										</div>
-										</div>
-									<!--Termina la secciion de escuela y negocios-->
+									</div>
+									<!--Termina la seccion de comunicacion-->
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12 col-md-12 col-lg-12">
-									<!--Inicia la secciion de escuela y negocios-->
+									<!--Inicia la seccion de escuela y negocios-->
 									<div class="well">
 										<div class="row">
 											<fieldset>
@@ -662,17 +559,7 @@
 														</div>
 													</a>
 												</div>
-												<?php }$permiso=$ci->model_permissions->check($id,'promociones');
-												if($permiso){
-												?>
-											<!--  	<div class="col-sm-2">
-													<a href="escuela_negocios/bonos"><! escuela_negocios/promociones >
-														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
-															<i class="fa fa-gift  fa-3x"></i>
-															<h5>Bonos</h5>
-														</div>
-													</a>
-												</div>  -->
+												
 												<?php }?>
 											</fieldset>
 										</div>
@@ -712,17 +599,7 @@
 														</div>
 													</a>
 												</div>
-											<?php }$permiso=$ci->model_permissions->check($id,'reconocimientos');
-											if($permiso){
-											?>
-										<!--  	<div class="col-sm-2">
-												<a href="escuela_negocios/reconocimientos">
-													<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
-														<i class="fa fa-star fa-3x"></i>
-														<h5>Reconocimientos</h5>
-													</div>
-												</a>
-											</div> -->
+											
                       <?php } ?>
                     	<?php $permiso=$ci->model_permissions->check($id,'estadisticas');
 												if($permiso){
@@ -738,20 +615,166 @@
 												<?php } ?>
 										</div>
 									</div>
-									<!--Termina la secciion de escuela y negocios-->
+									<!--Termina la seccion de escuela y negocios-->
 								</div>
 							</div>
-							<?php if($id==2){  
-												?>
-							<div class="row">
+							
+						<?php if($id==2){  ?>
+							<div class="row hide">
 								<div class="col-sm-12 col-md-12 col-lg-12">
-									<!--Inicia la secciion de otros-->
+									<!-- FUNCIONALIDADES SIN HACER O POR TERMINAR -->
 									<div class="well">
 										<div class="row">
 											<fieldset>
 												<legend><b>Premium</b></legend>
 												<div class="col-sm-1">
 												</div>
+												<?php $permiso=$ci->model_permissions->check($id,'promociones');
+												if($permiso){
+												?>
+											  	<div class="col-sm-2">
+													<a href="escuela_negocios/bonos"><!--   escuela_negocios/promociones -->
+														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
+															<i class="fa fa-gift  fa-3x"></i>
+															<h5>Bonos</h5>
+														</div>
+													</a>
+												</div>  
+												<?php }?>
+												<?php $permiso=$ci->model_permissions->check($id,'reconocimientos');
+											if($permiso){
+											?>
+										  	<div class="col-sm-2">
+												<a href="escuela_negocios/reconocimientos">
+													<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
+														<i class="fa fa-star fa-3x"></i>
+														<h5>Reconocimientos</h5>
+													</div>
+												</a>
+											</div> 
+                      						<?php } ?>
+												<div class="col-sm-2">
+													<a href="javascript:void(0);">
+														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>;">
+															<div class="row">
+																<i class="fa fa-facebook fa-1x"></i>
+																<i class="fa fa-twitter fa-1x"></i>
+															</div>
+															<div class="row">
+																<i class="fa fa-skype fa-1x"></i>
+																<i class="fa fa-youtube fa-1x"></i>
+															</div>
+															<h5>Redes Sociales</h5>
+														</div>
+													</a>
+												</div>
+												<div class="col-sm-2">
+													<a href="javascript:void(0);">
+														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
+															<i class="fa fa-gift fa-3x"></i>
+															<h5>Promociones</h5>
+														</div>
+													</a>
+												</div>
+												<?php $permiso=$ci->model_permissions->check($id,'mensajes');
+												if($permiso){
+												?>
+											  	<div class="col-sm-2">
+													<a href="cgeneral/web_personal">
+														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
+															<i class="fa fa-globe fa-3x"></i>
+															<h5>Web Personal</h5>
+														</div>
+													</a>
+												</div>	
+												<?php }?>
+												<?php $permiso=$ci->model_permissions->check($id,'chat');
+												if($permiso){
+												?>
+											  	<div class="col-sm-2">
+													<a href="cgeneral/chat">
+														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
+															<i class="fa fa-weixin fa-3x"></i>
+															<h5>Chat Mi Red</h5>
+														</div>
+													</a>
+												</div> 
+												<?php }?>
+												<?php $permiso=$ci->model_permissions->check($id,'soporte_tecnico');
+												if($permiso){
+												?>
+												<div class="col-sm-2">
+													<a href="cgeneral/soporte_tecnico_ver_redes">
+														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
+															<i class="fa fa-support fa-3x"></i>
+															<h5>Soporte Técnico</h5>
+														</div>
+													</a>
+												</div>
+												<?php }?>
+												
+												<?php $permiso=$ci->model_permissions->check($id,'soporte_tecnico');
+												if($permiso){
+												?>
+								
+											<div class="col-sm-1">
+												</div>
+												<div class="col-sm-2">
+													<a href="cabecera/sugerencia">
+														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
+															<i class="fa fa-send fa-3x"></i>
+															<h5>Sugerencias</h5>
+														</div>
+													</a>
+												</div>
+								</div>
+												<?php }?>
+												<?php $permiso=$ci->model_permissions->check($id,'videollamadas'); // [comunicacion]
+											if($permiso){
+											?>
+											<!-- cgeneral/videollamada -->
+											 <div class="col-sm-12">
+												<a href="#">
+													<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
+														<i class="fa fa-video-camera fa-3x"></i>
+														<h5>Vídeollamadas</h5>
+													</div>
+												</a>
+											</div> 
+											
+											<?php }?>
+												<?php $permiso=$ci->model_permissions->check($id,'social_network'); // [comunicacion] 
+												if($permiso){
+												?>
+													<div class="col-sm-12">
+													<a href="cgeneral/social_network">
+														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
+															<div class="row">
+																<i class="fa fa-facebook fa-1x"></i>
+																<i class="fa fa-twitter fa-1x"></i>
+															</div>
+															<div class="row">
+																<i class="fa fa-skype fa-1x"></i>
+																<i class="fa fa-youtube fa-1x"></i>
+															</div>
+															<h5>Social network</h5>
+														</div>
+													</a>
+												</div>
+												<?php }?>
+												
+												<?php $permiso=$ci->model_permissions->check($id,'tickets'); //reportes [compras]
+												if($permiso){
+												?>
+												<div class="col-sm-6">
+													<a href="javascript:void(0);"> <!-- compras/reportes -->
+														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:#c0c0c0;<?//=$style[0]->btn_1_color?>;">
+															<i class="fa fa-ticket fa-3x"></i><!-- fa-table -->
+															<h5>Tickets</h5> <!-- Reportes -->
+														</div>
+													</a>
+												</div>
+												<?php }?>
 												<div class="col-sm-2">
 													<a href="javascript:void(0);">
 														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
@@ -792,15 +815,10 @@
 														</div>
 													</a>
 												</div>
-												
-											 	
-												
 											
-
-											
+											</div>
 										</div>
-										</div>
-									<!--Termina la secciion de otros-->
+									<!--ESTE LIMITE NO ES FIJO-->
 								</div>
 							</div>
 							

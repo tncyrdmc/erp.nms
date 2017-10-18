@@ -99,7 +99,7 @@ class titulo extends CI_Model
 		
 		foreach ($redes as $red){
 
-			$totalPuntosPersonales=$totalPuntosPersonales+$afiliado->getPuntosTotalesPersonalesIntervalosDeTiempo($id_afiliado,$red->id,$cualquiera,$cualquiera,$fechaInicio,$fechaFin)[0]->total;
+			$totalPuntosPersonales=$totalPuntosPersonales+$afiliado->getPuntosTotalesPersonalesIntervalosDeTiempo($id_afiliado,$red->id,$cualquiera,$cualquiera,$fechaInicio,$fechaFin);
 		}
 
 		return $totalPuntosPersonales ;
@@ -121,7 +121,7 @@ class titulo extends CI_Model
 	
 		foreach ($redes as $red){
 	
-			$totalComprasPersonales=$totalComprasPersonales+$afiliado->getValorTotalDelasComprasPersonalesIntervalosDeTiempo($id_afiliado,$red->id,$cualquiera,$cualquiera,$fechaInicio,$fechaFin)[0]->total;
+			$totalComprasPersonales=$totalComprasPersonales+$afiliado->getValorTotalDelasComprasPersonalesIntervalosDeTiempo($id_afiliado,$red->id,$cualquiera,$cualquiera,$fechaInicio,$fechaFin);
 		}
 	
 		return $totalComprasPersonales ;

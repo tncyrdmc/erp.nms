@@ -162,6 +162,54 @@ FROM cedi p , City c, Country co where p.ciudad = c.ID and c.CountryCode = co.Co
 		return $id_temporal;
 	}
 
+	private function insertCliente( $id_temporal,  $valor) {
+	    
+	    $dato = array (
+	        "id_temporal" => $id_temporal,
+	        "id_user" => $valor
+	    );
+	    
+	    $this->db->insert ( "pos_temporal", $dato );
+	    
+	}
+
+	function setCliente( $id_temporal,  $valor) {
+	    
+	    $exist = $this->getTemporalCliente($id_temporal);
+	    
+	    if(!$exist)
+	       $this->insertCliente($id_temporal, $valor);
+	    else
+	       $this->updateCliente($id_temporal, $valor);
+	}
+    
+	private function updateCliente($id_temporal, $valor)
+    {
+        $query = 'update pos_temporal
+					set id_user  = "'.$valor.'"
+					where id_temporal = "'.$id_temporal.'"';
+	    
+	    $this->db->query($query);
+	    
+	    $this->updateTemporal($id_temporal, 'cliente', $valor);
+    }
+
+	
+	function getTemporalCliente( $id_temporal) {
+	    
+	    $query = 'SELECT id_user 
+                    FROM pos_temporal
+					WHERE id_temporal = "'.$id_temporal.'"';
+	    
+	    $q=$this->db->query($query);
+	    $q=$q->result();
+	    
+	    if(!$q)
+	        return false;
+	    
+	    return $q[0]->id_user;    
+	    
+	}
 	
 	function updateTemporalItem($mercancia, $id_temporal, $campo, $valor) {
 		
@@ -187,7 +235,12 @@ FROM cedi p , City c, Country co where p.ciudad = c.ID and c.CountryCode = co.Co
 		$query = 'delete from pos_venta_temporal
 					where id_temporal = "'.$id_temporal.'"';
 	
-		$this->db->query($query);
+	    $this->db->query($query);
+	    
+	    $query = 'delete from pos_temporal
+					where id_temporal = "'.$id_temporal.'"';
+	    
+	    $this->db->query($query);
 	}
 	
 	function deleteTemporalItem($mercancia, $id_temporal) {
@@ -451,7 +504,8 @@ FROM cedi p , City c, Country co where p.ciudad = c.ID and c.CountryCode = co.Co
 	private function insertTemporal($id, $id_temporal,$item) {
 		$mercancia = $this->get_mercancia_id($item);
 		$puntos = $mercancia[0]->puntos_comisionables*$mercancia[0]->min_venta;
-		$dato = array (
+		$Cliente = $this->getTemporalCliente($id_temporal);
+        $dato = array (
 				"id_temporal" => $id_temporal,
 				"id_user" => $id,
 				"item" => $item,
@@ -461,7 +515,8 @@ FROM cedi p , City c, Country co where p.ciudad = c.ID and c.CountryCode = co.Co
 				"costo" => 'MAYOR',
 				"descuento" => 0,
 				"tipo_descuento" => "$",
-				"estatus" => "ACT"
+				"estatus" => "ACT",
+		        "cliente" => $Cliente
 		);
                 
 		$this->db->insert ( "pos_venta_temporal", $dato );

@@ -435,12 +435,12 @@ class afiliado extends CI_Model
 		if($datos==null)
 			return 0;
 
-		return $datos[0]->total;
+		return $datos;
 	}
 	
 	function getPuntosTotalesPersonalesIntervalosDeTiempo($id_afiliado,$id_red,$id_tipo_mercancia,$id_mercancia,$fechaInicio,$fechaFin) {
 	    
-	    $cualquiera="0";$where ="";
+	    $cualquiera="0";$where ="";$valor=0;
 	    
 	    if($id_mercancia!==$cualquiera){
 	        $where .= "AND i.id in ($id_mercancia) ";
@@ -450,54 +450,21 @@ class afiliado extends CI_Model
 	        $where .= "AND i.id_tipo_mercancia in ($id_tipo_mercancia) ";
 	    }
 	    
-	    $cedi = "(SELECT
-								(CASE WHEN SUM(p.puntos)
-									THEN SUM(p.puntos)
-							        ELSE 0 END) cedi
-							FROM
-								pos_venta o,
-								venta v,
-							    pos_venta_item p,
-							    items i
-							WHERE
-								i.id = p.item
-								AND i.red = ".$id_red."
-								AND p.id_venta = o.id_venta
-								AND o.id_venta = v.id_venta
-								AND v.id_user = ".$id_afiliado."
-								AND v.id_estatus = 'ACT'
-								AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
-						)";
+	    $valor_cedi = $this->getValorVentaCedi($id_afiliado, $id_red, $fechaInicio, $fechaFin,"PUNTOS",$where);
 	    
-	    $cart = "(SELECT
-							    (CASE WHEN SUM(i.puntos_comisionables * cvm.cantidad)
-									THEN SUM(i.puntos_comisionables * cvm.cantidad)
-							        ELSE 0
-							    END) cart
-							FROM
-							    venta v,
-							    cross_venta_mercancia cvm,
-							    items i
-							WHERE
-							    v.id_venta = cvm.id_venta
-								AND i.id = cvm.id_mercancia
-							    AND v.id_user = ".$id_afiliado."
-							    AND i.red = ".$id_red."
-							    AND v.id_estatus = 'ACT'
-							    AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
-						)";
+	    $valor+=$valor_cedi;
 	    
+	    $valor_cart = $this->getValorVentaCart($id_afiliado, $id_red, $fechaInicio, $fechaFin,"PUNTOS", $where);
 	    
-	    $query = "SELECT ".$cart." + ".$cedi." total";
+	    $valor+=$valor_cart;
 	    
-	    $q=$this->db->query($query);
-	    return $q->result();
+	    return $valor;
 	    
 	}
 	
 	function getValorTotalDelasComprasPersonalesIntervalosDeTiempo($id_afiliado,$id_red,$id_tipo_mercancia,$id_mercancia,$fechaInicio,$fechaFin) {
 	    
-	    $cualquiera="0";$where ="";
+	    $cualquiera="0";$where ="";$valor=0;
 	    
 	    if($id_mercancia!==$cualquiera){
 	        $where .= "AND i.id in ($id_mercancia) ";
@@ -507,10 +474,64 @@ class afiliado extends CI_Model
 	        $where .= "AND i.id_tipo_mercancia in ($id_tipo_mercancia) ";
 	    }
 	    
+	    $valor_cedi = $this->getValorVentaCedi($id_afiliado, $id_red, $fechaInicio, $fechaFin,"COSTO",$where);
+	    
+	    $valor+=$valor_cedi;
+	    
+	    $valor_cart = $this->getValorVentaCart($id_afiliado, $id_red, $fechaInicio, $fechaFin,"COSTO", $where);
+	    
+	    $valor+=$valor_cart;
+	    
+	    return $valor;
+	    
+	}
+	
+	private function getValorVentaCart($id_afiliado, $id_red, $fechaInicio, $fechaFin,$tipo='PUNTOS', $where = '')
+	{
+	    $puntos = "(CASE WHEN SUM(i.puntos_comisionables * cvm.cantidad)
+        				 THEN SUM(i.puntos_comisionables * cvm.cantidad)
+        				 ELSE 0 END)";
+	    
+	    $costo = "(CASE WHEN SUM(cvm.costo_unidad * cvm.cantidad)
+						THEN SUM(cvm.costo_unidad * cvm.cantidad)
+						ELSE 0 END)";
+	    
+	    $set = ($tipo=="PUNTOS") ? $puntos : $costo;
+	    
+	    $cart = "(SELECT
+        				   ".$set." cart
+        				FROM
+        				    venta v,
+        				    cross_venta_mercancia cvm,
+        				    items i
+        				WHERE
+        				    v.id_venta = cvm.id_venta
+        					AND i.id = cvm.id_mercancia
+        				    AND v.id_user = ".$id_afiliado."
+        				    AND i.red = ".$id_red."
+        				    AND v.id_estatus = 'ACT'
+        				    AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
+        			)";
+	    
+	    
+	    $query = "SELECT ".$cart." total";
+	    $q=$this->db->query($query);
+	    $q= $q->result();
+	    
+	    $valor_cart = isset($q)&&isset($q[0]->total) ? $q[0]->total : 0;
+	    return $valor_cart;
+	    
+	}
+	
+	private function getValorVentaCedi($id_afiliado, $id_red, $fechaInicio, $fechaFin,$tipo='PUNTOS', $where = '')
+	{
+	    $puntos = "(CASE WHEN SUM(p.puntos) THEN SUM(p.puntos) ELSE 0 END)";
+	    $costo = "(CASE WHEN SUM(p.valor/p.cantidad) THEN SUM(p.valor/p.cantidad) ELSE 0 END)";
+	    
+	    $set = ($tipo=="PUNTOS") ? $puntos : $costo;
+	    
 	    $cedi = "(SELECT
-								(CASE WHEN SUM(p.valor/p.cantidad)
-									THEN SUM(p.valor/p.cantidad)
-							        ELSE 0 END) cedi
+								".$set." cedi
 							FROM
 								pos_venta o,
 								venta v,
@@ -526,31 +547,13 @@ class afiliado extends CI_Model
 								AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
 						)";
 	    
-	    $cart = "(SELECT
-							    (CASE WHEN SUM(cvm.costo_unidad * cvm.cantidad)
-									THEN SUM(cvm.costo_unidad * cvm.cantidad)
-							        ELSE 0
-							    END) cart
-							FROM
-							    venta v,
-							    cross_venta_mercancia cvm,
-							    items i
-							WHERE
-							    v.id_venta = cvm.id_venta
-								AND i.id = cvm.id_mercancia
-							    AND v.id_user = ".$id_afiliado."
-							    AND i.red = ".$id_red."
-							    AND v.id_estatus = 'ACT'
-							    AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
-						)";
-	    
-	    
-	    $query = "SELECT ".$cart." + ".$cedi." total";
-	    
+	    $query = "SELECT ".$cedi." total";
 	    $q=$this->db->query($query);
-	    return $q->result();
+	    $q= $q->result();
 	    
-	}
+	    $valor_cedi = isset($q)&&isset($q[0]->total) ? $q[0]->total : 0;
+	    return $valor_cedi;
+	}	
 
 	private function separarMercanciasConsulta($mercancias){
 		$mercancias =explode(", ", $mercancias);

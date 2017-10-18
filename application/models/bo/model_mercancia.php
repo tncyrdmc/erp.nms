@@ -731,6 +731,7 @@ class model_mercancia extends CI_Model {
 					        AND i.red = '".$red."'
 					        AND i.id_tipo_mercancia = 1
 					        AND (i.id = '".$id."'
+					        OR p.id = '".$id."'
 					        OR LOWER(p.codigo_barras) LIKE '".$strID."%'
 							OR LOWER(p.concepto) LIKE '".$strID."%'
 					        OR LOWER(p.nombre) LIKE '".$strID."%'

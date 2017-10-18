@@ -468,6 +468,10 @@ class POS extends CI_Controller
 			redirect('/auth');
 		}
 	
+		if(!$item)
+		    return "OK";
+		
+	
 		$id=$this->tank_auth->get_user_id();
 		$usuario=$this->general->get_username($id);
 		
@@ -475,7 +479,7 @@ class POS extends CI_Controller
 		
 		$id_temporal = $this->modelo_cedi->setIdTemporal ( $id, $almacen[0]->cedi );
 		
-		$this->modelo_cedi->updateTemporal( $id_temporal, 'cliente', $item);				
+		$this->modelo_cedi->setCliente( $id_temporal, $item);				
 		
 		echo "OK";
 	}

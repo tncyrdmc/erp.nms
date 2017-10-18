@@ -181,7 +181,7 @@ class modelo_logistico extends CI_Model
 			$suma = 0;
 			foreach ($mercancia as $item){
 				$id_mercancia = $item->id_mercancia;
-				$q = $this->model_inventario->consultar_en_inventario($id_mercancia,$almacen);
+				$q = $this->model_inventario->consultar_en_logistico($id_mercancia,$almacen);
 				$cantidad = $q ? $q[0]->cantidad : 0;
 				$suma += $cantidad;
 			}	
