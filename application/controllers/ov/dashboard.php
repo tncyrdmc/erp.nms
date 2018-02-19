@@ -5,7 +5,7 @@ class dashboard extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-
+		$this->isViewBonos();
 		$this->load->helper(array('form', 'url'));
 		$this->load->library('form_validation');
 		$this->load->library('security');
@@ -259,4 +259,21 @@ class dashboard extends CI_Controller
 			}
 		}
 	}
+
+	private function isViewBonos() {
+		$query = "SELECT * FROM information_schema.TABLES
+					WHERE table_name like 'vb_%'";
+		
+		$q=$this->db->query($query);
+		$q= $q->result();
+		
+		if($q){
+			echo "Se estan calculando los Bonos, Puedes Ingresar despues de unos minutos ...";
+			sleep(3); 
+			echo "<script>window.location.href='/auth/logout';</script>";		
+			exit();
+		}
+		
+	}	
+
 }

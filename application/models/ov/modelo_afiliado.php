@@ -397,10 +397,45 @@ class modelo_afiliado extends CI_Model{
 
 	
 	function obtenrIdUser($email){
-		$id_afiliador= $this->db->query('select id from users where email like "'.$email.'"');
-		
-		$id_afiliador = $id_afiliador->result();
-		return $id_afiliador[0]->id;
+	    
+	    $lastId = $this->obtenrIdLastUser();
+	    
+	    $q= $this->db->query("SELECT
+                                    id
+                                FROM
+                                    users
+                                WHERE
+                                    email LIKE '$email'
+                                        AND id NOT IN
+                                        (SELECT user_id FROM user_profiles)");
+	    $q = $q->result();
+	    
+	    if(!$q)
+	        return $lastId;
+	        
+	        foreach ($q as $dato){
+	            $id_dato = $dato->id;
+	            if($id_dato>0)
+	                return $id_dato;
+	        }
+	        
+	        return $lastId;
+	}
+	
+	function obtenrIdLastUser(){
+	    $q= $this->db->query("SELECT
+                                    id
+                                FROM
+                                    users
+                                WHERE
+                                    id NOT IN
+                                        (SELECT user_id FROM user_profiles)");
+	    $q = $q->result();
+	    
+	    if(!$q)
+	        return false;
+	        
+	        return $q[0]->id;
 	}
 	
 	function obtenrIdUsername($username){

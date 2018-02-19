@@ -52,7 +52,10 @@ class model_mercancia extends CI_Model {
 		$sku_2 = $nombre_ini . $sku . $_POST ['tipo_mercancia'];
 		
 		$mercancia = $this->CrearMercancia ( $sku, $sku_2, $_POST ['tipo_mercancia'], $_POST ['pais'], $_POST ['proveedor'], $_POST ['real'], $_POST ['costo'], $_POST ['entrega'], $_POST ['costo_publico'], $_POST ['puntos_com'], $iva, $_POST['descuento'] );
-		$this->ingresarimpuestos ( $_POST ['id_impuesto'], $mercancia );
+		$id_impuesto = isset($_POST ['id_impuesto']) ? $_POST ['id_impuesto'] :false;
+		
+		if($id_impuesto)
+		    $this->ingresarimpuestos ( $id_impuesto, $mercancia );
 		return $mercancia;
 	}
 	function nueva_membresia(){
@@ -71,7 +74,10 @@ class model_mercancia extends CI_Model {
 		$sku_2 = $nombre_ini . $sku . $_POST ['tipo_mercancia'];
 		
 		$mercancia = $this->CrearMercancia ( $sku, $sku_2, $_POST ['tipo_mercancia'], $_POST ['pais'], 0, 0, $_POST ['costo'], '0', 0, $_POST ['puntos_com'], $iva, $_POST['descuento'] );
-		$this->ingresarimpuestos ( $_POST ['id_impuesto'], $mercancia );
+		$id_impuesto = isset($_POST ['id_impuesto']) ? $_POST ['id_impuesto'] :false;
+		
+		if($id_impuesto)
+            $this->ingresarimpuestos ( $id_impuesto, $mercancia );
 		return $mercancia;	
 	}
 	function nuevo_producto() {
@@ -106,7 +112,10 @@ class model_mercancia extends CI_Model {
 		$sku_2 = $nombre_ini . $sku . $_POST ['tipo_mercancia'];
 		$iva=$this->validar_iva();
 		$mercancia = $this->CrearMercancia ( $sku, $sku_2, $_POST ['tipo_mercancia'], $_POST ['pais'], $_POST ['proveedor'], $_POST ['real'], $_POST ['costo'], $_POST ['entrega'], $_POST ['costo_publico'], $_POST ['puntos_com'], $iva, $_POST['descuento'] );
-		$this->ingresarimpuestos ( $_POST ['id_impuesto'], $mercancia );
+		$id_impuesto = isset($_POST ['id_impuesto']) ? $_POST ['id_impuesto'] :false;
+		
+		if($id_impuesto)
+		    $this->ingresarimpuestos ( $id_impuesto, $mercancia );
 		return $mercancia;
 	}
 	function validar_iva(){
@@ -270,7 +279,10 @@ class model_mercancia extends CI_Model {
 		$sku_2 = $nombre_ini . $sku . $_POST ['tipo_mercancia'];
 		$iva=$this->validar_iva();
 		$mercancia = $this->CrearMercancia ( $sku, $sku_2, $_POST ['tipo_mercancia'], $_POST ['pais'], 0, $_POST ['real'], $_POST ['costo'], $_POST ['entrega'], $_POST ['costo_publico'], $_POST ['puntos_com'],$iva, $_POST['descuento'] );
-		$this->ingresarimpuestos ( $_POST ['id_impuesto'], $mercancia );
+		$id_impuesto = isset($_POST ['id_impuesto']) ? $_POST ['id_impuesto'] :false;
+		
+		if($id_impuesto)
+		    $this->ingresarimpuestos ( $id_impuesto, $mercancia );
 		return $mercancia;
 	}
 	
@@ -431,7 +443,10 @@ class model_mercancia extends CI_Model {
 		$sku_2 = $nombre_ini . $sku . $_POST ['tipo_mercancia'];
 		$iva=$this->validar_iva();
 		$mercancia = $this->CrearMercancia ( $sku, $sku_2, $_POST ['tipo_mercancia'], $_POST ['pais'], 0, $_POST ['real'], $_POST ['costo'], $_POST ['entrega'], $_POST ['costo_publico'], $_POST ['puntos_com'], $iva, $_POST['descuento'] );
-		$this->ingresarimpuestos ( $_POST ['id_impuesto'], $mercancia );
+		$id_impuesto = isset($_POST ['id_impuesto']) ? $_POST ['id_impuesto'] :false;
+		
+		if($id_impuesto)
+		    $this->ingresarimpuestos ( $id_impuesto, $mercancia );
 		return $mercancia;
 	}
 	

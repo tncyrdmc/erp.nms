@@ -3,8 +3,8 @@
 			<div class="row">
 				<div class="col-xs-8 col-sm-8">
 					<span class="txt-color-white">
-			Copyright © 2016 Networksoft S.A.S Todos los derechos reservados.
-		<a href="http://www.networksoft.com.co/" target="_BLANK">Networksoft S.A.S</a></span>
+			Copyright © <?=date('Y')?> EMPRESA Todos los derechos reservados.
+		<a href="http://www.networksoft.com.mx/" target="_BLANK">NetworkSoft MLM</a></span>
 				</div>
 				<div class="col-xs-4 col-sm-4">
 					<span class="txt-color-white">
@@ -16,6 +16,34 @@
 			</div>
 		</div>
 		<!-- END PAGE FOOTER -->
+
+		<script type="text/javascript">
+
+		$(document).ready(function(){
+			bache_ui();
+		});	
+
+		
+		function bache_ui(){
+			
+			var pathname = window.location.pathname;
+			var ruta = pathname.split("/");
+			
+			if(ruta[2]=="compras")
+				return false;	
+
+			var footer = $( "#page-footer" ).height();			
+			var header = $( "header" ).height();
+			
+			var htm = $( document ).height();
+			
+			var size = (htm-(header+footer))-footer;
+
+			$( "#content" ).height(size);
+			
+		}	
+
+		</script>
 
 		<!-- SHORTCUT AREA : With large tiles (activated via clicking user name tag)
 		Note: These tiles are completely responsive,

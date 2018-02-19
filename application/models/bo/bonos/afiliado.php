@@ -507,7 +507,7 @@ class afiliado extends CI_Model
         				WHERE
         				    v.id_venta = cvm.id_venta
         					AND i.id = cvm.id_mercancia
-        				    AND v.id_user = ".$id_afiliado."
+        				    AND v.id_user in (".$id_afiliado.")
         				    AND i.red = ".$id_red."
         				    AND v.id_estatus = 'ACT'
         				    AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
@@ -542,7 +542,7 @@ class afiliado extends CI_Model
 								AND i.red = ".$id_red."
 								AND p.id_venta = o.id_venta
 								AND o.id_venta = v.id_venta
-								AND v.id_user = ".$id_afiliado."
+								AND v.id_user in (".$id_afiliado.")
 								AND v.id_estatus = 'ACT'
 								AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
 						)";
@@ -555,6 +555,190 @@ class afiliado extends CI_Model
 	    return $valor_cedi;
 	}	
 
+	function getPuntosTotalesPersonalesView($id_afiliado,$id_red,$fechaInicio,$fechaFin,$id_tipo_mercancia,$id_mercancia,$vista = "vb_bonos_totales") {
+		
+		$isView = $this->isViewBonos ($vista);#($id_afiliado!=1);
+		
+		if(!$isView){
+			
+			$cualquiera="0";$where ="";$valor=0;
+			
+			if($id_mercancia!==$cualquiera){
+				$where .= "AND i.id in ($id_mercancia) ";
+			}
+			
+			if($id_tipo_mercancia!==$cualquiera){
+				$where .= "AND i.id_tipo_mercancia in ($id_tipo_mercancia) ";
+			}
+			
+			$cedi = $this->getQueryCedi( $id_red, $fechaInicio, $fechaFin,"PUNTOS",$where);
+			
+			$cart = $this->getQueryCart( $id_red, $fechaInicio, $fechaFin,"PUNTOS", $where);
+			
+			$this->newViewBonos ( $cedi, $cart,$vista );
+			
+		}
+		
+		$valor = $this->getViewBonoId ( $id_afiliado,$vista );
+		
+		return $valor;
+		
+	}
+	
+	function getValorComprasPersonalesView($id_afiliado,$id_red,$fechaInicio,$fechaFin,$id_tipo_mercancia,$id_mercancia,$vista = "vb_bonos_totales") {
+		
+		$isView = $this->isViewBonos ($vista);#($id_afiliado!=1);
+		
+		if(!$isView){
+			
+			$cualquiera="0";$where ="";$valor=0;
+			
+			if($id_mercancia!==$cualquiera){
+				$where .= "AND i.id in ($id_mercancia) ";
+			}
+			
+			if($id_tipo_mercancia!==$cualquiera){
+				$where .= "AND i.id_tipo_mercancia in ($id_tipo_mercancia) ";
+			}
+			
+			$cedi = $this->getQueryCedi( $id_red, $fechaInicio, $fechaFin,"COSTO",$where);
+			
+			$cart = $this->getQueryCart( $id_red, $fechaInicio, $fechaFin,"COSTO",$where);
+			
+			$this->newViewBonos ( $cedi, $cart ,$vista);
+			
+		}
+		
+		$valor = $this->getViewBonoId ( $id_afiliado,$vista );
+		
+		return $valor;
+		
+	}
+	
+	private function getQueryCart( $id_red, $fechaInicio, $fechaFin, $tipo, $where) {
+		$puntos = "(CASE WHEN SUM(i.puntos_comisionables * cvm.cantidad)
+        				 THEN SUM(i.puntos_comisionables * cvm.cantidad)
+        				 ELSE 0 END)";
+		
+		$costo = "(CASE WHEN SUM(cvm.costo_unidad * cvm.cantidad)
+						THEN SUM(cvm.costo_unidad * cvm.cantidad)
+						ELSE 0 END)";
+		
+		$set = ($tipo=="PUNTOS") ? $puntos : $costo;
+		
+		$cart = "(SELECT
+        				   ".$set." cart
+        				FROM
+        				    venta v,
+        				    cross_venta_mercancia cvm,
+        				    items i
+        				WHERE
+        				    v.id_venta = cvm.id_venta
+        					AND i.id = cvm.id_mercancia
+        				    AND v.id_user in (u.id)
+        				    AND i.red = ".$id_red."
+        				    AND v.id_estatus = 'ACT'
+        				    AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
+        			)";
+		return $cart;
+	}
+	
+	private function getQueryCedi( $id_red, $fechaInicio, $fechaFin, $tipo, $where) {
+		$puntos = "(CASE WHEN SUM(p.puntos) THEN SUM(p.puntos) ELSE 0 END)";
+		$costo = "(CASE WHEN SUM(p.valor/p.cantidad) THEN SUM(p.valor/p.cantidad) ELSE 0 END)";
+		
+		$set = ($tipo=="PUNTOS") ? $puntos : $costo;
+		
+		$cedi = "(SELECT
+								".$set." cedi
+							FROM
+								pos_venta o,
+								venta v,
+							    pos_venta_item p,
+							    items i
+							WHERE
+								i.id = p.item
+								AND i.red = ".$id_red."
+								AND p.id_venta = o.id_venta
+								AND o.id_venta = v.id_venta
+								AND v.id_user in (u.id)
+								AND v.id_estatus = 'ACT'
+								AND v.fecha BETWEEN '".$fechaInicio."' AND '".$fechaFin." 23:59:59' $where
+						)";
+		return $cedi;
+	}
+	
+	private function getViewBonoId($id_afiliado,$vista = "vb_bonos_totales") {
+		$query = "SELECT * FROM $vista WHERE id = $id_afiliado";
+		
+		$q=$this->db->query($query);
+		$q= $q->result();
+		
+		if(!$q)
+			return 0;
+			
+		return $q[0]->total;
+	}
+	
+	
+	private function newViewBonos($cedi, $cart,$vista = "vb_bonos_totales") {
+		
+		$query = "CREATE TABLE IF NOT EXISTS $vista (
+					    id INT NOT NULL,
+					    total FLOAT DEFAULT 0
+					)";
+		
+		$q=$this->db->query($query);
+		
+		$query = "TRUNCATE $vista";
+		
+		$q=$this->db->query($query);
+		
+		$query = "INSERT INTO $vista
+					SELECT
+					    u.id,
+					    $cedi + $cart total
+					FROM
+					    users u,
+						user_profiles p
+					WHERE
+						p.user_id = u.id
+						AND p.id_tipo_usuario = 2
+					GROUP BY
+						u.id";
+					    
+		$q=$this->db->query($query);
+	}
+	
+	function dropViewBonos() {
+		
+		$query = "SELECT * FROM information_schema.TABLES
+					WHERE table_name like 'vb_%'";
+		
+		$q=$this->db->query($query);
+		$q= $q->result();
+		
+		foreach ($q as $dato){
+			
+			$tabla = $dato->TABLE_NAME;
+			
+			$query = "DROP TABLE IF EXISTS $tabla";
+		
+			$q=$this->db->query($query);			
+			
+		}		
+		
+	}
+	
+	private function isViewBonos($vista = "vb_bonos_totales") {
+		$query = "SELECT * FROM information_schema.TABLES
+					WHERE table_name = '$vista'";
+		
+		$q=$this->db->query($query);
+		$q= $q->result();
+		return $q;
+	}	
+	
 	private function separarMercanciasConsulta($mercancias){
 		$mercancias =explode(", ", $mercancias);
 		
@@ -701,10 +885,14 @@ class afiliado extends CI_Model
 		$total=0;
 		
 		$this->getAfiliadosDebajoDe($id_afiliado,$red,$tipo,$nivel,$limite);
-	
-		foreach ($this->getIdAfiliadosRed() as $id_afiliado){
+
+		if(!$this->getIdAfiliadosRed())
+			return $total;
+		
+		$id_afiliado = implode(",", $this->getIdAfiliadosRed());
+		#foreach ($this->getIdAfiliadosRed() as $id_afiliado){
 			$total+=$this->getComprasPersonalesIntervaloDeTiempo($id_afiliado, $red,$fechaInicio,$fechaFin,$id_tipo_mercancia,$id_mercancia,$datosVenta);
-		}
+		#}
 		return $total;
 	}
 

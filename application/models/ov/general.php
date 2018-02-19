@@ -99,7 +99,7 @@ class general extends CI_Model
 	$redes= $q->result();
 	
 	foreach ($redes as $red){
-		$puntos=$this->afiliado->getPuntosTotalesPersonalesIntervalosDeTiempo($id_afiliado,$red->id,$cualquiera,$cualquiera,$fechaInicio,$fechaFin)[0]->total;
+		$puntos=$this->afiliado->getPuntosTotalesPersonalesIntervalosDeTiempo($id_afiliado,$red->id,$cualquiera,$cualquiera,$fechaInicio,$fechaFin);
 		$puntosComisionablesMes=$puntosComisionablesMes+$puntos;
 		
 	}

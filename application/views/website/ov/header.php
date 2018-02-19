@@ -11,7 +11,7 @@
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<img style="width: 8rem; height: auto; padding: 1rem;" src="/logo.png" alt="Networksoft">
+						<img style="height: 4em; witdh: auto; padding: 1rem;" src="/logo.png" alt="Networksoft">
 					</div>
 
 					<!-- Collect the nav links, forms, and other content for toggling -->

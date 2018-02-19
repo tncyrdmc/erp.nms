@@ -505,6 +505,9 @@ class POS extends CI_Controller
 					
 		$temporal = $this->modelo_cedi->getTemporalItem($id_temporal,$item);
 		
+		if(!$temporal)
+			exit();
+
 		$limite =  $temporal[0]->inventario - $temporal[0]->minimo;
 		
 		$cantidad = $temporal[0]->cantidad;		

@@ -702,7 +702,8 @@ where(a.id_pais=b.Code)");
 	
 	function update_mercancia()
 	{
-		if($_POST['tipo_merc']==1)
+	    $id_impuesto = isset($_POST['id_impuesto']) ? $_POST['id_impuesto'] : array();
+        if($_POST['tipo_merc']==1)
 		{
 			$sku_q=$this->db->query("SELECT sku from mercancia where id=".$_POST['id_merc']);
 			$sku_res=$sku_q->result();
@@ -747,7 +748,7 @@ where(a.id_pais=b.Code)");
 			$this->db->where('id', $_POST['id_merc']);
 			$this->db->update('mercancia', $dato_mercancia); 
 			$this->db->query("delete from cross_merc_impuesto where id_mercancia=".$_POST['id_merc']);
-			foreach($_POST['id_impuesto'] as $impuesto)
+			foreach($id_impuesto as $impuesto)
 			{
 				$dato_impuesto=array(
 					"id_mercancia"	=> $_POST['id_merc'],
@@ -794,8 +795,8 @@ where(a.id_pais=b.Code)");
 			$this->db->update('mercancia', $dato_mercancia); 
 			$this->db->query("delete from cross_merc_impuesto where id_mercancia=".$_POST['id_merc']);
 			
-			if (isset($_POST['id_impuesto'])){
-				foreach($_POST['id_impuesto'] as $impuesto)
+			if (isset($id_impuesto)){
+				foreach($id_impuesto as $impuesto)
 				{
 					$dato_impuesto=array(
 						"id_mercancia"	=> $_POST['id_merc'],
@@ -988,8 +989,8 @@ where(a.id_pais=b.Code)");
 			$this->db->where('id', $_POST['id_merc']);
 			$this->db->update('mercancia', $dato_mercancia); 
 			$this->db->query("delete from cross_merc_impuesto where id_mercancia=".$_POST['id_merc']);
-			if (isset($_POST['id_impuesto'])){
-			foreach($_POST['id_impuesto'] as $impuesto)
+			if (isset($id_impuesto)){
+			foreach($id_impuesto as $impuesto)
 			{
 				$dato_impuesto=array(
 					"id_mercancia"	=> $_POST['id_merc'],
@@ -1183,8 +1184,8 @@ where(a.id_pais=b.Code)");
 			$this->db->where('id', $_POST['id_merc']);
 			$this->db->update('mercancia', $dato_mercancia);
 			$this->db->query("delete from cross_merc_impuesto where id_mercancia=".$_POST['id_merc']);
-			if (isset($_POST['id_impuesto'])){
-			foreach($_POST['id_impuesto'] as $impuesto)
+			if (isset($id_impuesto)){
+			foreach($id_impuesto as $impuesto)
 			{
 				$dato_impuesto=array(
 					"id_mercancia"	=> $_POST['id_merc'],
@@ -1224,8 +1225,8 @@ where(a.id_pais=b.Code)");
 			$this->db->update('mercancia', $dato_mercancia); 
 			$this->db->query("delete from cross_merc_impuesto where id_mercancia=".$_POST['id_merc']);
 			
-			if (isset($_POST['id_impuesto'])){
-				foreach($_POST['id_impuesto'] as $impuesto)
+			if (isset($id_impuesto)){
+				foreach($id_impuesto as $impuesto)
 				{
 					$dato_impuesto=array(
 						"id_mercancia"	=> $_POST['id_merc'],

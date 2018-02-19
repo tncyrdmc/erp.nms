@@ -24,7 +24,7 @@ class calculador_bono extends CI_Model
 		$this->load->model('/bo/bonos/activacion_bono');
 		$this->load->model('/bo/bonos/repartidor_comision_bono');
 		$this->load->model('/bo/bonos/afiliado');
-		$this->load->model('/bo/bonos/clientes/mobileMoney/bono_mobile_money');
+		$this->load->model('/bo/bonos/clientes/mobileMoney/bono_mobile_money'); /** Segun Cliente : Reemplazar Folder y File*/ 
 		
 		$this->setFechaCalculoBono(date('Y-m-d'));
 	}
@@ -112,7 +112,7 @@ class calculador_bono extends CI_Model
 			$id_afiliado=$usuario->id_afiliado;
 			$this->darComisionRedDeAfiliado($bono,$id_historial_pago_bono,$id_afiliado,$fechaActual);
 		}
-		
+		$this->afiliado->dropViewBonos();
 		return true;
 	}
 	
@@ -234,8 +234,8 @@ class calculador_bono extends CI_Model
 		
 		/* (Bono a la medida) Repartir valor total de igualaciones dividido numero de compras por puntos (Money Mobile) */
 		else if($verticalidad=="RDESC"){
-			$bonoMoneyMobile=$this->bono_mobile_money;
-			$this->repartirComisionesBonoPorIgualacionesPorCompras ($bonoMoneyMobile, $id_bono,$id_bono_historial,$id_usuario,$red,$nivel,$valor,$condicion_red,$verticalidad,$fecha);
+			#$bonoMoneyMobile=$this->bono_mobile_money;
+			#$this->repartirComisionesBonoPorIgualacionesPorCompras ($bonoMoneyMobile, $id_bono,$id_bono_historial,$id_usuario,$red,$nivel,$valor,$condicion_red,$verticalidad,$fecha);
 		}
 	}
 	
@@ -285,7 +285,8 @@ class calculador_bono extends CI_Model
 		foreach ($afiliados as $idAfiliado){
 
 			if($this->usuarioPuedeRecibirBono($id_bono, $idAfiliado, $this->getFechaCalculoBono())){
-				$valorTotal=(($this->valorCondicion*$valor)/100);
+				$valorTotal=$this->valorCondicion;#*($valor/100);
+				log_message('DEV',"repartirComisionesBonoEnLaRedPorcentaje : $idAfiliado | $valorTotal");
 				$repartidorComisionBono->repartirComisionBono($repartidorComisionBono->getIdTransaccionPagoBono(),$idAfiliado,$id_bono,$id_bono_historial,$valorTotal);
 	
 			}
@@ -300,6 +301,8 @@ class calculador_bono extends CI_Model
 		
 		foreach ($afiliados as $idAfiliado){
 			if($this->usuarioPuedeRecibirBono($id_bono, $idAfiliado, $this->getFechaCalculoBono())){
+				$valor = $this->valorCondicion;
+				log_message('DEV',"repartirComisionesBonoEnLaRed : $idAfiliado | $valor");
 				$repartidorComisionBono->repartirComisionBono($repartidorComisionBono->getIdTransaccionPagoBono(),$idAfiliado,$id_bono,$id_bono_historial,$valor);
 	
 			}
@@ -364,16 +367,33 @@ class calculador_bono extends CI_Model
 			$condicion1=$condicionBono->getCondicionBono1();
 			$condicion2=$condicionBono->getCondicionBono2();
 
+			$Activo = $this->bono_mobile_money->isActived($id_usuario,$id_bono,$red,$fechaActual);
+			
+			if(!$Activo)
+			    return false;	
+
 			$valor = $this->getValorCondicionUsuario ($id_bono,$esUnPlanBinario, $tipoDeCondicion,$id_usuario,$red,$tipoDeAfiliados,$tipoDeBusquedaEnLaRed,$profundidadRed,$fechaInicio,$fechaFin ,$condicion1,$condicion2);
+
+			log_message('DEV',"o-> $id_usuario : $id_bono | $valor");
 
 			if($esUnPlanBinario=="SI"){
 				if($valor<$valorCondicion&&$resultadoBinario==true)
 					$resultadoBinario=false;
 			}else {
-				if($valor<$valorCondicion)
-					
+				if($valor<$valorCondicion)					
 					return false;
 			}
+
+			$valor = array(
+						"id_usuario" => $id_usuario,
+						"valor" => $valor,
+						"fecha" => $fechaActual
+			);
+			$getValorBonoBy = $this->bono_mobile_money->getValorBonoBy($id_bono,$valor);
+			$this->setValorCondicion($getValorBonoBy);
+				
+			if($getValorBonoBy>0)
+				log_message('DEV',"|->> usuarioPuedeRecibirBono");
 
 		}
 

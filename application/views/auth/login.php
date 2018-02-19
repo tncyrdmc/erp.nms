@@ -2,7 +2,7 @@
 <html lang="en-us" id="extr-page">
 	<head>
 		<meta charset="utf-8">
-		<title>Ingreso Oficina Virtual</title>
+		<title>BACKOFFICE EMPRESA</title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -61,7 +61,7 @@
 				<img id="compania" src="/logo.png" alt="">
 			</div>
 			<div class="hidden-xs col-sm-6 col-md-6 col-lg-6">
-				<h1>Sistema Integral de Operaciones NetworkSoft &reg;</h1>
+				<h1>BACKOFFICE EMPRESA &reg;</h1>
 			</div>
 		</header>
 
@@ -150,7 +150,7 @@
 		<div id="footer" class="fade in">
 		<br />
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-				<small>Copyright © 2016 Networksoft S.A.S Todos los derechos reservados. Networksoft S.A.S</small>
+				<small>Copyright © 2018 EMPRESA Todos los derechos reservados. EMPRESA * </small>
 			</div>
 		</div>
 		<!--================================================== -->	
